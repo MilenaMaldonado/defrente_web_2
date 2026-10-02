@@ -1,0 +1,28 @@
+<script>
+const c=document.getElementById("cmp");
+const MID=50, AMP=33, SPEED=.00045, IDLE=3000; // SPEED: más bajo = más lento (ciclo ≈ 14 s)
+let drag=false, auto=true, pos=50, phase=0, last=performance.now(), vis=true, timer;
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const set=p=>{pos=Math.max(0,Math.min(100,p));c.style.setProperty("--p",pos);c.setAttribute("aria-valuenow",Math.round(pos))};
+const at=x=>{const r=c.getBoundingClientRect();set((x-r.left)/r.width*100)};
+// Al interactuar se pausa el movimiento automático y se reanuda tras 3 s sin tocar
+function pause(){
+  auto=false;clearTimeout(timer);
+  timer=setTimeout(()=>{phase=Math.asin(Math.max(-1,Math.min(1,(pos-MID)/AMP)));c.classList.remove("snap");auto=true},IDLE);
+}
+c.addEventListener("pointerdown",e=>{drag=true;pause();c.classList.remove("snap");c.setPointerCapture(e.pointerId);at(e.clientX)});
+c.addEventListener("pointermove",e=>{if(drag)at(e.clientX)});
+c.addEventListener("pointerup",()=>{drag=false;pause()});
+c.addEventListener("keydown",e=>{
+  const n={ArrowLeft:pos-5,ArrowRight:pos+5,Home:0,End:100}[e.key];
+  if(n!==undefined){e.preventDefault();pause();c.classList.add("snap");set(n)}
+});
+// Solo se mueve cuando está visible en pantalla
+new IntersectionObserver(([en])=>vis=en.isIntersecting).observe(c);
+function loop(now){
+  const dt=Math.min(now-last,50);last=now;
+  if(auto&&vis&&!drag&&!reduce){phase+=dt*SPEED;set(MID+AMP*Math.sin(phase))}
+  requestAnimationFrame(loop);
+}
+set(50);requestAnimationFrame(loop);
+</script>

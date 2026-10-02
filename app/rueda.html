@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carrusel circular</title>
+<style>
+  :root{--bg:#0b0b0b;--panel:#202020;--hub:#1c1c1c;--fg:#e6e6e6}
+  html{height:100%}
+  body{margin:0;height:100%;background:var(--bg);display:flex;align-items:center;justify-content:center;
+    font-family:Helvetica,Arial,sans-serif;overflow:hidden}
+  #fit{width:100%;display:flex;justify-content:center}
+  #stage{position:relative;width:1180px;height:580px;flex:none;background:var(--panel);overflow:hidden;transform-origin:top center}
+  #wheel{position:absolute;left:50%;top:0;width:1100px;height:1100px;margin:-550px 0 0 -550px;
+    transition:transform 1s cubic-bezier(.65,0,.25,1)}
+  .slide{position:absolute;inset:0;transition:opacity .8s, filter .8s;opacity:.28;filter:brightness(.6)}
+  .slide.active{opacity:1;filter:none}
+  #hub{position:absolute;left:50%;top:0;width:420px;height:420px;margin:-210px 0 0 -210px;border-radius:50%;background:var(--hub)}
+  #info{position:absolute;left:50%;top:48px;transform:translateX(-50%);text-align:center;color:var(--fg);width:360px;transition:opacity .35s}
+  #info.out{opacity:0}
+  h1{margin:0;font-size:30px;letter-spacing:1px;text-transform:uppercase}
+  .line{width:32px;height:1px;background:#999;margin:16px auto}
+  .cat{font-size:11px;font-weight:700;text-transform:uppercase}
+  .btn-view{display:inline-block;margin-top:18px;padding:4px 10px;border:1px solid #ccc;font-size:8px;font-weight:700;
+    letter-spacing:1px;text-transform:uppercase;color:var(--fg);background:none;cursor:pointer}
+  .nav{position:absolute;top:50%;background:rgba(0,0,0,.5);color:#fff;border:0;font:700 14px Helvetica,Arial,sans-serif;
+    padding:8px 6px;cursor:pointer}
+  .nav:hover{background:#000}
+  #prev{left:0}#next{right:0}
+</style>
+</head>
+<body>
+<div id="fit">
+  <div id="stage">
+    <div id="wheel"></div>
+    <div id="hub"></div>
+    <div id="info">
+      <h1 id="title"></h1><div class="line"></div>
+      <div class="cat" id="cat"></div>
+      <button class="btn-view">View project</button>
+    </div>
+    <button class="nav" id="prev">Prev</button>
+    <button class="nav" id="next">Next</button>
+  </div>
+</div>
+<script>
+// Cambia "bg" por una imagen: "url(mi-foto.jpg) center/cover"
+const slides = [
+  {title:"Lorem Ipsum", cat:"Videography / Editing", bg:"linear-gradient(135deg,#f4fbfb 0%,#b9c9d6 45%,#5a3d66 100%)"},
+  {title:"Dolor Sit",   cat:"Photography",           bg:"linear-gradient(135deg,#ffd9a0,#e0683b 60%,#4a1f2e)"},
+  {title:"Amet Elit",   cat:"Motion Design",         bg:"linear-gradient(135deg,#a7f0d4,#2b8c8c 55%,#10263f)"},
+  {title:"Consectetur", cat:"Branding",              bg:"linear-gradient(135deg,#e9d4ff,#8a5cf5 55%,#241447)"},
+  {title:"Adipiscing",  cat:"Web Design",            bg:"linear-gradient(135deg,#fff3a6,#d6a21e 55%,#3a2a05)"},
+  {title:"Tempor",      cat:"Illustration",          bg:"linear-gradient(135deg,#ffc2d1,#d6336c 55%,#3b0f21)"},
+  {title:"Incididunt",  cat:"3D / Animation",        bg:"linear-gradient(135deg,#c9e4ff,#3a7bd5 55%,#0d1b3d)"}
+];
+const N = slides.length, STEP = 360 / N, GAP = 1.2;
+const R_OUT = 540, R_IN = 210, SIZE = 1100, C = SIZE/2;
+
+function sector(center){
+  const a0 = center - STEP/2 + GAP/2, a1 = center + STEP/2 - GAP/2, pts = [], n = 24;
+  const P = (r,a)=>{const t=a*Math.PI/180; return ${((C+r*Math.sin(t))/SIZE*100).toFixed(3)}% ${((C+r*Math.cos(t))/SIZE*100).toFixed(3)}%};
+  for(let i=0;i<=n;i++) pts.push(P(R_OUT, a0+(a1-a0)*i/n));
+  for(let i=n;i>=0;i--) pts.push(P(R_IN,  a0+(a1-a0)*i/n));
+  return polygon(${pts.join(",")});
+}
+
+const wheel = document.getElementById("wheel");
+const els = slides.map((s,i)=>{
+  const d = document.createElement("div");
+  d.className = "slide";
+  d.style.background = s.bg;
+  d.style.clipPath = sector(i*STEP);
+  wheel.appendChild(d);
+  return d;
+});
+
+const info = document.getElementById("info"), title = document.getElementById("title"), cat = document.getElementById("cat");
+let idx = 0, turns = 0;
+
+function render(first){
+  wheel.style.transform = rotate(${turns*STEP}deg);
+  els.forEach((e,i)=>e.classList.toggle("active", i===idx));
+  if(first){ title.textContent = slides[idx].title; cat.textContent = slides[idx].cat; return; }
+  info.classList.add("out");
+  setTimeout(()=>{ title.textContent = slides[idx].title; cat.textContent = slides[idx].cat; info.classList.remove("out"); }, 350);
+}
+function go(dir){ turns += dir; idx = ((turns % N) + N) % N; render(); }
+
+document.getElementById("next").onclick = ()=>go(1);
+document.getElementById("prev").onclick = ()=>go(-1);
+addEventListener("keydown", e=>{ if(e.key==="ArrowRight") go(1); if(e.key==="ArrowLeft") go(-1); });
+let x0=null;
+addEventListener("touchstart", e=>x0=e.touches[0].clientX, {passive:true});
+addEventListener("touchend", e=>{ if(x0===null) return; const dx=e.changedTouches[0].clientX-x0; if(Math.abs(dx)>40) go(dx<0?1:-1); x0=null; });
+
+const stage = document.getElementById("stage"), fit = document.getElementById("fit");
+function fitStage(){
+  const k = Math.min(1, innerWidth/1180);
+  stage.style.transform = scale(${k});
+  fit.style.height = (580*k)+"px";
+  stage.style.marginRight = stage.style.marginLeft = ${-(1180*(1-k))/2}px;
+}
+addEventListener("resize", fitStage); fitStage();
+render(true);
+</script>
+</body>
+</html>

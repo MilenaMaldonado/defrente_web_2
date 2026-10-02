@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agenda tu diagnóstico</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&family=Outfit:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#eae0b8;--ink:#2d1020;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:Outfit,Helvetica,Arial,sans-serif}
+.intro{height:80vh;display:flex;align-items:center;justify-content:center;text-align:center;font-size:13px;letter-spacing:.2em;text-transform:uppercase;padding:0 24px}
+#cta{position:relative;height:100vh;min-height:620px;overflow:hidden;background:var(--cream)}
+#cta .top{position:absolute;left:0;right:0;top:0;height:86px;background:var(--ink);z-index:5}
+#cta .bot{position:absolute;left:50%;bottom:-2px;width:min(380px,60vw);height:30px;margin-left:calc(min(380px,60vw)/-2);background:var(--ink);clip-path:polygon(0 100%,9% 0,91% 0,100% 100%);z-index:5}
+.bar{position:absolute;left:0;top:0;background:var(--ink);will-change:transform}
+#btn{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:4;background:var(--cream);color:var(--ink);
+ border:3px solid var(--ink);padding:clamp(18px,3vw,26px) clamp(24px,5vw,44px);font:italic 700 clamp(18px,3vw,26px) 'Playfair Display',Georgia,serif;cursor:pointer;
+ transition:background .3s,color .3s}
+#btn:hover{background:var(--ink);color:var(--cream)}
+</style>
+</head>
+<body>
+<div class="intro">Desplaza ↓ &nbsp; el caos se ordena</div>
+<section id="cta">
+  <div class="top"></div>
+  <button id="btn">Agenda tu diagnóstico</button>
+  <div class="bot"></div>
+</section>
+<script>
+const cta=document.getElementById("cta"), btn=document.getElementById("btn");
+const NB=22, rnd=(a,b)=>a+Math.random()*(b-a), clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const smooth=x=>x*x*(3-2*x);
+let W,H,cx,cy,t=0,mx=-999,my=-999,burst=0;
+const bars=[];
+for(let i=0;i<NB;i++){
+  const el=document.createElement("div");el.className="bar";cta.insertBefore(el,btn);
+  bars.push({el,
+    ang:(i/NB)*Math.PI*2+rnd(-.08,.08), len:rnd(150,520), w:42, gap:rnd(36,90),
+    cl:rnd(160,480), cw:rnd(48,84), cxr:Math.random(), cyr:Math.random(), crot:rnd(-100,100),
+    delay:rnd(0,.45), ph:rnd(0,6.28), x:null,y:null,r:0,l:0,wd:0});
+}
+function layout(){
+  W=cta.clientWidth;H=cta.clientHeight;cx=W/2;cy=H/2+28;
+  const hw=btn.offsetWidth/2,hh=btn.offsetHeight/2;
+  bars.forEach(b=>{
+    const c=Math.abs(Math.cos(b.ang)),s=Math.abs(Math.sin(b.ang));
+    const rb=Math.min(c?hw/c:1e9,s?hh/s:1e9);
+    b.r0=rb+b.gap; b.ox=cx+Math.cos(b.ang)*(b.r0+b.len/2); b.oy=cy+Math.sin(b.ang)*(b.r0+b.len/2);
+    b.orot=b.ang*180/Math.PI;
+  });
+}
+function progress(){const r=cta.getBoundingClientRect(),vh=innerHeight;t=clamp((vh-r.top)/(vh*.85),0,1)}
+cta.addEventListener("pointermove",e=>{const r=cta.getBoundingClientRect();mx=e.clientX-r.left;my=e.clientY-r.top});
+cta.addEventListener("pointerleave",()=>{mx=my=-999});
+cta.addEventListener("pointerdown",()=>{burst=1}); // clic = vuelve el caos un momento
+const still=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function frame(now){
+  burst*=.96;
+  bars.forEach(b=>{
+    let k=smooth(clamp(t*1.5-b.delay,0,1)); k=clamp(k-burst*.8,0,1);
+    const chx=b.cxr*W, chy=b.cyr*H;
+    let x=chx+(b.ox-chx)*k, y=chy+(b.oy-chy)*k;
+    let r=b.crot+b.orot*0+(b.orot-b.crot)*k;
+    const l=b.cl+(b.len-b.cl)*k, w=b.cw+(b.w-b.cw)*k;
+    if(!still){ // fricción: vibración suave + repulsión del puntero
+      x+=Math.sin(now*.0007+b.ph)*5*k; y+=Math.cos(now*.0009+b.ph)*5*k; r+=Math.sin(now*.0006+b.ph)*1.5*k;
+      const dx=x-mx,dy=y-my,d=Math.hypot(dx,dy);
+      if(d<220){const f=1-d/220;x+=dx/d*f*90;y+=dy/d*f*90;r+=f*28*(dx>0?1:-1)}
+    }
+    if(b.x===null){b.x=x;b.y=y;b.r=r;b.l=l;b.wd=w}
+    const e=.14;b.x+=(x-b.x)*e;b.y+=(y-b.y)*e;b.r+=(r-b.r)*e;b.l+=(l-b.l)*e;b.wd+=(w-b.wd)*e;
+    b.el.style.width=b.l+"px";b.el.style.height=b.wd+"px";
+    b.el.style.transform=`translate(${b.x-b.l/2}px,${b.y-b.wd/2}px) rotate(${b.r}deg)`;
+  });
+  requestAnimationFrame(frame);
+}
+addEventListener("scroll",progress,{passive:true});
+addEventListener("resize",()=>{layout();progress()});
+document.fonts&&document.fonts.ready.then(layout);
+layout();progress();requestAnimationFrame(frame);
+</script>
+</body>
+</html>

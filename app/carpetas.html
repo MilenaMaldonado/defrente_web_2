@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Proyectos · Espacios que convierten</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#eae0b8;--ink:#2d1020;--bar:#2d1020;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+ --tex:repeating-linear-gradient(90deg,rgba(255,255,255,.09) 0 1px,transparent 1px 3px),repeating-linear-gradient(0deg,rgba(0,0,0,.07) 0 1px,transparent 1px 2px),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:Outfit,Helvetica,Arial,sans-serif}
+#sec{position:relative}
+#stage{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--cream)}
+.bar{position:absolute;left:0;right:0;height:16px;background:var(--bar);z-index:50}
+.bar.t{top:0}.bar.b{bottom:0}
+#head{position:absolute;top:7vh;left:0;right:0;text-align:center;transition:opacity .6s,transform .8s}
+.kick{font-size:11px;letter-spacing:.25em;text-transform:uppercase;opacity:.7}
+h1{font:italic 700 clamp(40px,8vw,68px)/1 'Playfair Display',Georgia,serif;margin:10px 0 14px}
+#head p{margin:0 auto;max-width:360px;font-size:clamp(16px,2.6vw,21px);line-height:1.35}
+#head p b{display:block;font-weight:500;font-size:1.3em}
+.note{margin-top:14px;font-size:11px;opacity:.6}
+.open #head{opacity:0;transform:translateY(-40px)}
+#stack{position:absolute;top:38vh;left:0;right:0;margin:auto;width:min(860px,92vw);height:92vh;transition:transform .9s cubic-bezier(.65,0,.25,1)}
+.open #stack{transform:translateY(-29vh)}
+.f{position:absolute;left:calc(var(--i)*14px);top:calc(var(--i)*28px);width:calc(100% - 70px);height:100%;
+ clip-path:polygon(0 28px,50% 28px,53% 0,74% 0,77% 28px,100% 28px,100% 100%,0 100%);
+ background:var(--tex),var(--c);transition:transform .9s cubic-bezier(.65,0,.25,1);cursor:pointer;color:var(--ink)}
+.f.on{transform:translateY(calc(var(--i)*-28px));z-index:20;cursor:default}
+.tab{position:absolute;top:6px;left:53%;width:21%;text-align:center;font-size:clamp(10px,1.7vw,14px);letter-spacing:.05em;text-transform:uppercase;color:var(--t)}
+.c{position:absolute;inset:56px 4% 0 5%;opacity:0;transition:opacity .5s;pointer-events:none}
+.on .c{opacity:1;transition-delay:.45s}
+.img{position:absolute;left:0;top:0;width:68%;height:44%;background:var(--g);box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.img i{position:absolute;left:10px;bottom:8px;font:400 10px Outfit,sans-serif;color:#fff;opacity:.8;letter-spacing:.08em;text-transform:uppercase}
+.card{position:absolute;right:0;top:30%;width:54%;min-width:230px;background:var(--cream);padding:clamp(14px,3vw,26px);box-shadow:0 14px 36px rgba(0,0,0,.2)}
+.num{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.num em{font:italic 700 clamp(42px,8vw,64px)/1 'Playfair Display',Georgia,serif}
+.num small{font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.num strong{font:italic 700 clamp(17px,3vw,22px)/1.1 'Playfair Display',Georgia,serif}
+.card p{margin:14px 0 0;font-size:clamp(13px,2vw,16px);line-height:1.4}
+.card span{display:block;margin-top:10px;font-size:11px;opacity:.65}
+#dots{position:absolute;bottom:30px;left:0;right:0;display:flex;justify-content:center;gap:10px;z-index:40;opacity:0;transition:opacity .5s}
+.open #dots{opacity:1}
+#dots button{width:10px;height:10px;border-radius:50%;border:1px solid var(--ink);background:none;padding:0;cursor:pointer}
+#dots button.on{background:var(--ink)}
+#hint{position:absolute;bottom:34px;left:0;right:0;text-align:center;font-size:12px;letter-spacing:.2em;text-transform:uppercase;transition:opacity .4s}
+.open #hint{opacity:0}
+</style>
+</head>
+<body>
+<section id="sec">
+ <div id="stage">
+  <div class="bar t"></div><div class="bar b"></div>
+  <div id="head">
+   <div class="kick">Espacios que convierten</div>
+   <h1>Proyectos</h1>
+   <p>Cada proyecto responde a un objetivo comercial <b>concreto.</b></p>
+   <div class="note">Cada carpeta es un expediente de proyecto · las imágenes son conceptos y renders.</div>
+  </div>
+  <div id="stack"></div>
+  <div id="dots"></div>
+  <div id="hint">Desplaza ↓</div>
+ </div>
+</section>
+<script>
+const F=[
+ {n:"Feria",sub:"Stand de feria · Efímero",c:"#3f1f2c",t:"#fff",g:"linear-gradient(135deg,#d8b4a0,#8d4b4b)"},
+ {n:"Corporativo",sub:"Oficinas · Corporativo",c:"#7d4f5e",t:"#fff",g:"linear-gradient(135deg,#c9d3d8,#5d7385)"},
+ {n:"Local",sub:"Arquitectura comercial · Local",c:"#93626f",t:"#fff",g:"linear-gradient(135deg,#e6c9c9,#b5787a)"},
+ {n:"Hotelería",sub:"Hotelería · Concepto",c:"#a47d86",t:"#fff",g:"linear-gradient(135deg,#e8dcc4,#9a8160)"},
+ {n:"Efímero",sub:"Corner & pop-up · Centro comercial",c:"#b99aa1",t:"#fff",g:"linear-gradient(135deg,#f0d9c8,#c97f6d)"},
+ {n:"Joyería",sub:"Joyería & accesorios · España",c:"#dec3c8",t:"#5a2f3c",g:"linear-gradient(135deg,#f4e6d4,#b08968)"}];
+const TXT="Optimizamos el recorrido y analizamos tus objetivos para atraer más clientes y convertir más visitas en ventas.";
+const N=F.length, stack=document.getElementById("stack"), dots=document.getElementById("dots"),
+ stage=document.getElementById("stage"), sec=document.getElementById("sec"), STEP=.8;
+F.forEach((f,i)=>{
+ const d=document.createElement("div");d.className="f";
+ d.style.cssText=`--i:${i};--c:${f.c};--t:${f.t};z-index:${i+1}`;
+ d.innerHTML=`<div class="tab">${f.n}</div><div class="c"><div class="img" style="--g:${f.g}"><i>Concepto / render</i></div>
+  <div class="card"><div class="num"><em>0${i+1}.</em><small>${f.n}</small><strong>${f.sub.split(" · ")[0]}</strong></div>
+  <p>${TXT}</p><span>${f.sub}</span></div></div>`;
+ d.onclick=()=>jump(i);stack.appendChild(d);
+ const b=document.createElement("button");b.setAttribute("aria-label",f.n);b.onclick=()=>jump(i);dots.appendChild(b);
+});
+const fs=[...stack.children], bs=[...dots.children];
+let cur=-2;
+function jump(k){scrollTo({top:sec.offsetTop+(k+1)*innerHeight*STEP+4,behavior:"smooth"})}
+function update(){
+ const vh=innerHeight, sc=Math.min(Math.max(-sec.getBoundingClientRect().top,0),sec.offsetHeight-vh);
+ const step=Math.min(Math.floor(sc/(vh*STEP)+1e-4)-1,N-1);
+ if(step===cur)return;cur=step;
+ stage.classList.toggle("open",step>=0);
+ fs.forEach((e,i)=>e.classList.toggle("on",i===step));
+ bs.forEach((e,i)=>e.classList.toggle("on",i===step));
+}
+function size(){sec.style.height=innerHeight*(STEP*(N+1)+1)+"px";update()}
+addEventListener("scroll",update,{passive:true});addEventListener("resize",size);size();
+</script>
+</body>
+</html>
