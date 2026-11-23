@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { standPhotoPath, standProjectGroups } from "@/lib/stand-projects"
+import { hospitalityPhotoPath, hospitalityProjects } from "@/lib/hospitality-projects"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -18,6 +20,24 @@ function NavLinkFrame() {
     </span>
   )
 }
+
+const projectMapLocations: { name: string; x: number; y: number; match?: string[] }[] = [
+  { name: "México", x: 87, y: 60, match: ["México"] },
+  { name: "Quito", x: 155, y: 232, match: ["Quito", "Cumbayá"] },
+  { name: "Galway", x: 764, y: 141 },
+  { name: "Francia", x: 872, y: 274 },
+  { name: "La Coruña", x: 718, y: 338 },
+  { name: "Pontevedra", x: 732, y: 354 },
+  { name: "San Sebastián", x: 784, y: 362, match: ["San Sebastián"] },
+  { name: "Valencia", x: 810, y: 412 },
+  { name: "Suiza", x: 958, y: 310 },
+  { name: "Praga", x: 1066, y: 255, match: ["Praga"] },
+  { name: "Viena", x: 1066, y: 294 },
+  { name: "Rumanía", x: 1200, y: 331, match: ["Rumanía"] },
+  { name: "Serbia", x: 1135, y: 371 },
+  { name: "Macedonia", x: 1160, y: 416 },
+  { name: "Chipre", x: 1328, y: 517, match: ["Chipre"] },
+]
 
 const processPhases = [
   {
@@ -79,7 +99,7 @@ const processPhases = [
 function getProcessSectorClipPath(index: number) {
   const count = processPhases.length
   const step = 360 / count
-  const gap = 1.2
+  const gap = 0
   const start = index * step - step / 2 + gap / 2
   const end = index * step + step / 2 - gap / 2
   const point = (radius: number, angle: number) => {
@@ -93,68 +113,178 @@ function getProcessSectorClipPath(index: number) {
     point(50, start + ((end - start) * pointIndex) / 8),
   )
   const innerPoints = Array.from({ length: 9 }, (_, pointIndex) =>
-    point(28, end - ((end - start) * pointIndex) / 8),
+    point(31, end - ((end - start) * pointIndex) / 8),
   )
 
   return `polygon(${[...outerPoints, ...innerPoints].join(", ")})`
 }
 
-const projectFolders = [
+type ProjectEntry = {
+  name: string
+  place: string
+  size?: string
+  service?: string
+  description?: string
+  images: string[]
+}
+
+const imageSeries = (folder: string, files: string[]) => files.map((file) => `${folder}/${file}.webp`)
+
+const standPortfolioGroups = standProjectGroups.map(({ projects }) =>
+  projects.map(({ name, location, year, area, photos, service, description }): ProjectEntry => ({
+    name,
+    place: location + ", " + year,
+    size: area + " m²",
+    service,
+    description,
+    images: photos.map(standPhotoPath),
+  })),
+)
+
+const projectFolders: {
+  name: string
+  subtitle: string
+  color: string
+  textColor: string
+  description: string
+  projects: ProjectEntry[]
+}[] = [
   {
     name: "Feria",
     subtitle: "Stand de feria · Efímero",
-    location: "México DF · 12 m² · 2024",
     color: "#3f1f2c",
     textColor: "#fffaf3",
-    images: ["/corner_popup/mexico/2.webp", "/corner_popup/mexico/2.1.webp", "/corner_popup/mexico/2.2.webp", "/corner_popup/mexico/2.3.webp"],
     description: "Un stand de joyería de autoservicio diseñado para dar visibilidad al producto y aprovechar cada metro cuadrado.",
+    projects: [
+      {
+        name: "Stand de joyería",
+        place: "México DF, 2024",
+        size: "12 m²",
+        images: imageSeries("/corner_popup/mexico", ["2", "2.1", "2.2", "2.3"]),
+      },
+    ],
   },
   {
     name: "Corporativo",
     subtitle: "Oficinas · Corporativo",
-    location: "Cumbayá y Quito · Ecuador",
     color: "#714654",
     textColor: "#fffaf3",
-    images: ["/oficinas/cumbaya/1.webp", "/oficinas/quito/1.webp"],
     description: "Espacios de trabajo que integran identidad de marca, comodidad y zonas pensadas para colaborar.",
+    projects: [
+      {
+        name: "Salón Urdesa",
+        place: "Cumbayá, 2019",
+        size: "64 m²",
+        service: "Rediseño y ejecución de espacio corporativo.",
+        description: "Diseño de un espacio abierto de coworking y networking, orientado a fomentar la colaboración y el encuentro entre usuarios. La propuesta prioriza flexibilidad, confort y una distribución abierta que favorece distintos usos dentro de un mismo ambiente.",
+        images: [
+          "/servicios%20paginas/corporativo/CUMBAY%C3%81/OF%201.png",
+          "/servicios%20paginas/corporativo/CUMBAY%C3%81/OF%202.png",
+          "/servicios%20paginas/corporativo/CUMBAY%C3%81/OF%203%20(2).png",
+        ],
+      },
+      {
+        name: "Oficinas Grupo CEAS",
+        place: "Quito, 2020",
+        size: "180 m²",
+        service: "Rediseño y ejecución de espacio corporativo.",
+        description: "Transformación de un espacio diáfano en distintas áreas de trabajo y atención, mejorando la privacidad, funcionalidad y eficiencia operativa. La propuesta integra divisiones ligeras y vegetación para mantener la amplitud, favorecer la entrada de luz y crear un entorno más cálido y profesional.",
+        images: imageSeries("/proyectos/corporativo/grupo-ceas", ["1", "2", "3", "4", "5"]),
+      },
+      {
+        name: "Coworking Grupo Empresarial",
+        place: "Quito, 2021",
+        size: "164 m²",
+        service: "Análisis de optimización y rentabilidad espacial, rediseño y ejecución de espacio corporativo.",
+        description: "Rediseño integral de espacio corporativo orientado a optimizar la distribución, mejorar la funcionalidad y aumentar el aprovechamiento de cada área. La propuesta reorganiza los puestos de trabajo, zonas colaborativas y circulaciones para crear un entorno más eficiente, flexible y alineado con las necesidades operativas de la empresa.",
+        images: imageSeries("/proyectos/corporativo/coworking-grupo-empresarial", ["1", "2", "3", "4", "5", "6"]),
+      },
+      {
+        name: "IKIGAI",
+        place: "Quito, 2025",
+        size: "78 m²",
+        service: "Diseño, rediseño y ejecución de espacio corporativo.",
+        description: "Rediseño integral del área de Talento Humano, orientado a mejorar la funcionalidad, privacidad y confort del espacio. La propuesta reorganiza las áreas de trabajo y atención para crear un entorno más eficiente, profesional y alineado con la identidad de la empresa.",
+        images: imageSeries("/proyectos/corporativo/ikigai", ["1", "2", "3", "4", "5"]),
+      },
+      {
+        name: "Artro",
+        place: "Quito, 2021",
+        size: "66 m²",
+        service: "Diseño, optimización y ejecución de espacio corporativo.",
+        description: "Rediseño de áreas destinadas al descanso y bienestar del equipo, priorizando confort y funcionalidad. La propuesta incorpora zonas recreativas y de pausa que mejoran la experiencia del personal dentro del entorno de trabajo.",
+        images: imageSeries("/proyectos/corporativo/artro", ["1", "2", "3", "4", "5", "6"]),
+      },
+    ],
   },
   {
     name: "Local",
-    subtitle: "Arquitectura comercial · Retail",
-    location: "Quito · Ecuador",
+    subtitle: "Arquitectura comercial · Local",
     color: "#93626f",
     textColor: "#fffaf3",
-    images: ["/comercial/quito1/1.webp", "/comercial/quito/1.webp", "/comercial/1.1.webp"],
     description: "Diseñamos recorridos claros y ambientes que conectan la experiencia de compra con la identidad de cada marca.",
+    projects: [
+      {
+        name: "Sistema modular de exposición",
+        place: "San Sebastián, 2023",
+        service: "Diseño y testeo de sistema modular de mobiliario expositivo.",
+        description: "Desarrollo de un sistema modular compuesto por piezas independientes que pueden reorganizarse y desplazarse según las necesidades del espacio. El diseño juega con distintas alturas para jerarquizar el producto, mejorar su visibilidad y permitir configuraciones flexibles. El prototipo fue validado satisfactoriamente en fase de testeo.",
+        images: imageSeries("/comercial/madrid", ["1", "2", "3", "4", "5"]),
+      },
+      { name: "Local comercial", place: "Quito · Ecuador", images: imageSeries("/comercial/quito", ["1", "2", "3", "4"]) },
+      { name: "Local comercial II", place: "Quito · Ecuador", images: imageSeries("/comercial/quito1", ["1", "1.1", "2"]) },
+      ...standPortfolioGroups[1],
+    ],
   },
   {
     name: "Hotelería",
     subtitle: "Hotelería · Hospitality",
-    location: "Madrid · España",
     color: "#a47d86",
     textColor: "#fffaf3",
-    images: ["/hoteleria/arbnb_madrid/2.webp", "/hoteleria/hoteleria_madrid/5.webp"],
     description: "Lugares de estancia acogedores que equilibran bienestar, funcionalidad y una experiencia memorable.",
+    projects: [
+      ...hospitalityProjects.map(({ name, location, year, area, photos, service, description }): ProjectEntry => ({
+        name,
+        place: location + ", " + year,
+        size: area + " m²",
+        service,
+        description,
+        images: photos.map(hospitalityPhotoPath),
+      })),
+    ],
   },
   {
     name: "Efímero",
-    subtitle: "Corner & pop-up · Retail",
-    location: "Tulum y México DF",
+    subtitle: "Corner & pop-up · Centro comercial",
     color: "#b08a92",
     textColor: "#2b101d",
-    images: ["/corner_popup/tulum/1.webp", "/corner_popup/mexico1/1.webp"],
     description: "Formatos temporales que hacen visible tu marca y permiten llevar la experiencia de compra a nuevos espacios.",
+    projects: [
+      { name: "Pop-up", place: "Tulum · México", images: imageSeries("/corner_popup/tulum", ["1", "1.2", "1.3", "1.4"]) },
+      { name: "Corner", place: "México DF", images: imageSeries("/corner_popup/mexico1", ["1", "2"]) },
+      ...standPortfolioGroups[0],
+    ],
   },
   {
     name: "Joyería",
-    subtitle: "Joyería & accesorios · Retail",
-    location: "Mallorca, México DF y Puerto Banús",
+    subtitle: "Joyería & accesorios · España",
     color: "#dec3c8",
     textColor: "#5a2f3c",
-    images: ["/joyeria/mallorca/2.webp", "/joyeria/mexicodf/4.webp", "/joyeria/puertobanus/1.webp"],
     description: "Espacios donde iluminación, materiales y recorrido ponen el producto en el centro de la experiencia.",
+    projects: [
+      { name: "Joyería", place: "Mallorca · España", images: imageSeries("/joyeria/mallorca", ["2", "1"]) },
+      { name: "Joyería", place: "México DF", images: imageSeries("/joyeria/mexicodf", ["4", "1", "2", "3"]) },
+      { name: "Joyería", place: "Puerto Banús · España", images: imageSeries("/joyeria/puertobanus", ["1", "2", "3", "4"]) },
+    ],
   },
 ]
+
+const mapLocations = projectMapLocations.map((location) => ({
+  ...location,
+  projects: projectFolders
+    .flatMap((folder, folderIndex) => folder.projects.map((entry, entryIndex) => ({ folderIndex, entryIndex, entry })))
+    .filter(({ entry }) => location.match?.some((keyword) => entry.place.includes(keyword))),
+}))
 
 export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -168,37 +298,11 @@ export default function Home() {
   const [newsletterEmail, setNewsletterEmail] = useState("")
   const [isNewsletterEmailValid, setIsNewsletterEmailValid] = useState(false)
   const [isNewsletterFieldActive, setIsNewsletterFieldActive] = useState(false)
-  const [activeProjectFolder, setActiveProjectFolder] = useState(-1)
-  const projectSectionRef = useRef<HTMLElement | null>(null)
+  const [activeProjectFolder, setActiveProjectFolder] = useState(0)
+  const [activeProjectEntry, setActiveProjectEntry] = useState(0)
+  const [activeProjectImage, setActiveProjectImage] = useState(0)
+  const [projectPageTurn, setProjectPageTurn] = useState(0)
   const activeProcessPhase = ((processTurn % processPhases.length) + processPhases.length) % processPhases.length
-  useEffect(() => {
-    const updateActiveProjectFolder = () => {
-      const section = projectSectionRef.current
-      if (!section) return
-
-      const viewportHeight = window.innerHeight
-      const sectionScroll = Math.min(
-        Math.max(-section.getBoundingClientRect().top, 0),
-        section.offsetHeight - viewportHeight,
-      )
-      const nextFolder = Math.min(
-        Math.floor(sectionScroll / (viewportHeight * 0.42) + 1e-4) - 1,
-        projectFolders.length - 1,
-      )
-
-      setActiveProjectFolder((currentFolder) => currentFolder === nextFolder ? currentFolder : nextFolder)
-    }
-
-    window.addEventListener("scroll", updateActiveProjectFolder, { passive: true })
-    window.addEventListener("resize", updateActiveProjectFolder)
-    updateActiveProjectFolder()
-
-    return () => {
-      window.removeEventListener("scroll", updateActiveProjectFolder)
-      window.removeEventListener("resize", updateActiveProjectFolder)
-    }
-  }, [])
-
   useEffect(() => {
     const compare = caseCompareRef.current
     if (!compare) return
@@ -323,9 +427,9 @@ export default function Home() {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
     const barStates = bars.map((element, index) => ({
       element,
-      angle: (index / bars.length) * Math.PI * 2 + random(-0.08, 0.08),
-      length: random(150, 520),
-      gap: random(36, 90),
+      angle: (index / bars.length) * Math.PI * 2 + random(-0.095, 0.095),
+      length: random(155, 425),
+      gap: random(48, 85),
       chaosLength: random(160, 480),
       chaosWidth: random(48, 84),
       chaosX: Math.random(),
@@ -345,6 +449,7 @@ export default function Home() {
 
     let width = 0
     let height = 0
+    let scale = 1
     let centerX = 0
     let centerY = 0
     let progress = 0
@@ -358,6 +463,7 @@ export default function Home() {
     const layout = () => {
       width = stage.clientWidth
       height = stage.clientHeight
+      scale = clamp(width / 1020, 0.55, 1.18)
       const stageBounds = stage.getBoundingClientRect()
       const buttonBounds = button.getBoundingClientRect()
       centerX = buttonBounds.left - stageBounds.left + buttonBounds.width / 2
@@ -370,9 +476,9 @@ export default function Home() {
           horizontalRadius ? buttonBounds.width / 2 / horizontalRadius : Infinity,
           verticalRadius ? buttonBounds.height / 2 / verticalRadius : Infinity,
         )
-        const finalRadius = radius + bar.gap
-        bar.targetX = centerX + Math.cos(bar.angle) * (finalRadius + bar.length / 2)
-        bar.targetY = centerY + Math.sin(bar.angle) * (finalRadius + bar.length / 2)
+        const finalRadius = (radius + bar.gap + bar.length / 2) * scale + radius * (1 - scale)
+        bar.targetX = centerX + Math.cos(bar.angle) * finalRadius
+        bar.targetY = centerY + Math.sin(bar.angle) * finalRadius
         bar.targetRotation = (bar.angle * 180) / Math.PI
       })
     }
@@ -405,8 +511,8 @@ export default function Home() {
         let x = chaosX + (bar.targetX - chaosX) * targetProgress
         let y = chaosY + (bar.targetY - chaosY) * targetProgress
         let rotation = bar.chaosRotation + (bar.targetRotation - bar.chaosRotation) * targetProgress
-        const length = bar.chaosLength + (bar.length - bar.chaosLength) * targetProgress
-        const barWidth = bar.chaosWidth + (42 - bar.chaosWidth) * targetProgress
+        const length = (bar.chaosLength + (bar.length - bar.chaosLength) * targetProgress) * scale
+        const barWidth = (bar.chaosWidth + (31 - bar.chaosWidth) * targetProgress) * scale
 
         if (!reducedMotion) {
           x += Math.sin(now * 0.0007 + bar.phase) * 5 * targetProgress
@@ -423,7 +529,7 @@ export default function Home() {
           }
         }
 
-        if (bar.x === null) {
+        if (bar.x === null || bar.y === null) {
           bar.x = x
           bar.y = y
           bar.rotation = rotation
@@ -479,44 +585,71 @@ export default function Home() {
     }
   }, [isContactFormOpen])
 
-  const jumpToProjectFolder = (index: number) => {
-    const section = projectSectionRef.current
-    if (!section) return
-
-    const sectionTop = section.getBoundingClientRect().top + window.scrollY
-    window.scrollTo({
-      top: sectionTop + (index + 1) * window.innerHeight * 0.42,
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
-    })
+  const openProjectFolder = (index: number) => {
+    const nextIndex = (index + projectFolders.length) % projectFolders.length
+    if (nextIndex === activeProjectFolder) return
+    setActiveProjectFolder(nextIndex)
+    setActiveProjectEntry(0)
+    setActiveProjectImage(0)
+    setProjectPageTurn((turn) => turn + 1)
   }
+
+  const goToProject = (folderIndex: number, entryIndex: number) => {
+    if (folderIndex !== activeProjectFolder) setProjectPageTurn((turn) => turn + 1)
+    setActiveProjectFolder(folderIndex)
+    setActiveProjectEntry(entryIndex)
+    setActiveProjectImage(0)
+    document.getElementById("projects")?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }
+
+  const openProjectEntry = (index: number) => {
+    setActiveProjectEntry(index)
+    setActiveProjectImage(0)
+  }
+
+  const activeFolder = projectFolders[activeProjectFolder]
+  const activeEntry = activeFolder.projects[activeProjectEntry] ?? activeFolder.projects[0]
 
   const serviceCards = [
     {
       number: "01",
+      image: "/servicios%20tarjetas/Portada%20locales.png",
+      imageAlt: "Interior de una joyería con exhibidores",
       category: "LOCALES",
       title: "Locales comerciales",
       description: "Optimizamos el recorrido y analizamos tus objetivos para atraer más clientes y convertir más visitas en ventas.",
     },
     {
       number: "02",
+      href: "/servicios/corporativo",
+      image: "/servicios%20tarjetas/Portada%20Corporativo.png",
+      imageAlt: "Oficina con zona de estar y mesas de trabajo",
       category: "CORPORATIVO",
       title: "Oficinas y espacios corporativos",
       description: "Oficinas, sedes y áreas de atención para mejorar la operación, la experiencia interna y el rendimiento del equipo.",
     },
     {
       number: "03",
+      image: "/comercial/quito1/2.webp",
+      imageAlt: "Interior comercial con mesas y sillas",
       category: "EXPANSIÓN",
       title: "Franquicias y expansión",
       description: "Un modelo de tienda replicable que protege tu marca, facilita futuras aperturas y acompaña tu plan de crecimiento.",
     },
     {
       number: "04",
+      href: "/servicios/stands",
+      image: "/servicios%20tarjetas/Portada%20stands.png",
+      imageAlt: "Stand de joyería MiraMira",
       category: "EFÍMERO",
       title: "Stands, pop-ups y corners",
       description: "Tu marca vendiendo fuera de casa: ferias y campañas para probar el mercado.",
     },
     {
       number: "05",
+      href: "/servicios/hospitality",
+      image: "/servicios%20tarjetas/hospitaly.png",
+      imageAlt: "Sala y comedor con iluminación cálida",
       category: "HOSPITALITY",
       title: "Hoteles y hospitalidad",
       description: "Consultoría y diseño para el sector hotelero y restaurantes, enfocada en la acogida, el bienestar y la atención al cliente.",
@@ -535,24 +668,24 @@ export default function Home() {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-[#2e2119]/60" />
+          <div className="absolute inset-0 bg-[#2e2119]/85" />
 
           <header className="absolute inset-x-0 top-0 z-50 bg-transparent text-[#fffaf3]">
-            <div className="container flex h-20 items-center justify-between">
-              <Link href="/" className="flex items-center" onClick={() => setIsMobileMenuOpen(false)}>
+            <div className="hero-shell hero-header-bar flex items-center justify-between">
+              <Link href="/" className="relative z-10 flex items-center" onClick={() => setIsMobileMenuOpen(false)}>
                 <Image
-                  src="/logos/logo_nuevo.png"
-                  alt="DEFRENTE"
-                  width={2402}
-                  height={1260}
-                  className="h-14 w-auto md:h-16"
+                  src="/logos/logo_oficial.png"
+                  alt="DEFRENTE · Espacios que convierten"
+                  width={1600}
+                  height={839}
+                  className="hero-logo h-auto"
                   priority
                 />
               </Link>
-              <nav className="hidden flex-1 lg:mx-8 lg:flex xl:mx-12" aria-label="Navegación principal">
-                <ul className="m-0 flex w-full list-none items-center justify-center gap-8 p-0 xl:gap-14">
+              <nav className="hero-nav hidden lg:flex" aria-label="Navegación principal">
+                <ul className="m-0 flex list-none items-center p-0">
                   <li>
-                    <Link href="/" className="nav-link whitespace-nowrap no-underline">
+                    <Link href="/" aria-current="page" className="nav-link nav-link-active whitespace-nowrap no-underline">
                       Home
                       <NavLinkFrame />
                     </Link>
@@ -577,7 +710,7 @@ export default function Home() {
                   </li>
                 </ul>
               </nav>
-              <Link href="#contact" className="nav-cta hidden whitespace-nowrap no-underline transition-opacity hover:opacity-70 lg:block">
+              <Link href="#contact" className="nav-cta relative z-10 hidden whitespace-nowrap no-underline transition-opacity hover:opacity-70 lg:block">
                 Agenda tu diagnóstico
               </Link>
               <button
@@ -617,23 +750,22 @@ export default function Home() {
             )}
           </header>
 
-          <div className="relative z-10 flex min-h-screen flex-col px-4 pb-8 pt-28 sm:px-6 sm:pb-10 sm:pt-32 md:pb-14 lg:px-8">
-            <div className="main-content w-full text-left">
-              <p className="eyebrow mb-3 text-left sm:mb-5">
+          <div className="hero-shell hero-body relative z-10 flex min-h-screen flex-col">
+            <div className="main-content text-left">
+              <p className="eyebrow text-left">
                 CONSULTORÍA ESTRATÉGICA DE RETAIL · TIENDAS QUE VENDEN MÁS
               </p>
-              <h1 className="main-title block text-left">
-                <span>Consultoría</span>
-                <br />
+              <h1 className="main-title text-left">
+                <span className="main-title-first">Consultoría</span>
                 <span className="main-title-second"><span className="title-ampersand">&amp;</span> diseño</span>
               </h1>
-              <p className="bottom-subheading mt-2 text-left sm:mt-4">
+              <p className="bottom-subheading text-left">
                 DE LOCALES COMERCIALES
               </p>
             </div>
 
-            <div className="container mt-auto flex w-full flex-col gap-7 pt-12 lg:flex-row lg:items-end lg:justify-between">
-              <div className="flex flex-wrap items-center gap-8">
+            <div className="hero-bottom mt-auto">
+              <div className="hero-bottom-links">
                 <Link href="#contact" className="bottom-link transition-opacity hover:opacity-65">
                   Agenda tu diagnóstico
                 </Link>
@@ -641,11 +773,11 @@ export default function Home() {
                   Ver Servicios
                 </Link>
               </div>
-              <div className="flex w-full flex-col gap-7 lg:max-w-[50%] lg:flex-row lg:items-start lg:gap-12">
-                <p className="description-text max-w-sm flex-1">
+              <div className="hero-descriptions">
+                <p className="description-text">
                   Analizamos tu proyección de ventas y plan de crecimiento anual para diseñar una tienda que responda a tus objetivos de negocio.
                 </p>
-                <p className="description-text max-w-sm flex-1">
+                <p className="description-text">
                   optimizamos el recorrido del cliente, la distribución del espacio y la visibilidad de tu tienda para impulsar las ventas.
                 </p>
               </div>
@@ -722,8 +854,8 @@ export default function Home() {
                     >
                       <div className="service-carousel-image-wrap">
                         <Image
-                          src="/comercial/quito1/2.webp"
-                          alt="Interior comercial con mesas y sillas"
+                          src={card.image}
+                          alt={card.imageAlt}
                           fill
                           sizes="(max-width: 768px) 72vw, 320px"
                           loading={position === 0 ? "eager" : "lazy"}
@@ -739,7 +871,7 @@ export default function Home() {
                           </div>
                         </div>
                         <p className="service-card-description">{card.description}</p>
-                        <Link href="#services-carousel" tabIndex={position === 0 ? 0 : -1} className="service-card-link">
+                        <Link href={card.href ?? "#services-carousel"} tabIndex={position === 0 ? 0 : -1} className="service-card-link">
                           Ver servicio <span aria-hidden="true">→</span>
                         </Link>
                       </div>
@@ -828,7 +960,7 @@ export default function Home() {
                   tabIndex={0}
                 >
                   <Image
-                    src="/corner_popup/mexico1/1.webp"
+                    src="/antes_despues/Miramira_ANTES_separada.png"
                     alt=""
                     fill
                     sizes="(max-width: 768px) 100vw, 68vw"
@@ -836,7 +968,7 @@ export default function Home() {
                   />
                   <div className="featured-case-after-image">
                     <Image
-                      src="/Home/Home/Home_F3_MIRAMIRA_DESPUES.webp"
+                      src="/antes_despues/Miramira_DESPUES_separada.png"
                       alt=""
                       fill
                       sizes="(max-width: 768px) 100vw, 68vw"
@@ -897,16 +1029,21 @@ export default function Home() {
                 <div
                   key={phase.category}
                   className={`process-wheel-sector${index === activeProcessPhase ? " is-active" : ""}`}
-                  style={{ clipPath: getProcessSectorClipPath(index) }}
+                  style={{
+                    clipPath: getProcessSectorClipPath(0),
+                    transform: `rotate(${index * (360 / processPhases.length)}deg)`,
+                  }}
                 >
-                  <Image
-                    src={phase.image}
-                    alt=""
-                    fill
-                    sizes="(max-width: 768px) 100vw, 850px"
-                    loading={index === activeProcessPhase ? "eager" : "lazy"}
-                    className="process-wheel-image"
-                  />
+                  <div className="process-wheel-image-frame">
+                    <Image
+                      src={phase.image}
+                      alt=""
+                      fill
+                      sizes="(max-width: 768px) 60vw, 480px"
+                      loading={index === activeProcessPhase ? "eager" : "lazy"}
+                      className="process-wheel-image"
+                    />
+                  </div>
                 </div>
               ))}
             </div>
@@ -914,11 +1051,12 @@ export default function Home() {
             <div className="process-wheel-hub" aria-live="polite" aria-atomic="true">
               <p className="process-wheel-category">{processPhases[activeProcessPhase].category}</p>
               <span className="process-wheel-number">{String(activeProcessPhase + 1).padStart(2, "0")}</span>
-              <h3>{processPhases[activeProcessPhase].title}</h3>
+              <h3>
+                {activeProcessPhase === 0 ? (
+                  <>Diagnóstico <span>estratégico</span></>
+                ) : processPhases[activeProcessPhase].title}
+              </h3>
               <p className="process-wheel-description">{processPhases[activeProcessPhase].description}</p>
-              <p className="process-wheel-count">
-                {String(activeProcessPhase + 1).padStart(2, "0")} / {String(processPhases.length).padStart(2, "0")}
-              </p>
             </div>
 
             <button
@@ -947,134 +1085,278 @@ export default function Home() {
             <Image
               src="/fotos_principal/mapa.png"
               alt="Mapa de proyectos de DEFRENTE en Europa y Latinoamérica"
-              width={1458}
-              height={576}
+              width={1469}
+              height={572}
               sizes="100vw"
               className="process-wheel-map-image"
             />
+            {mapLocations.map(({ name, x, y, projects }) => {
+              const placement = [
+                y < 200 ? "is-below" : "is-above",
+                x < 300 ? "is-start" : x > 1150 ? "is-end" : "is-center",
+              ].join(" ")
+
+              return (
+                <div
+                  key={name}
+                  className={`process-map-spot ${placement}${projects.length ? " has-projects" : ""}`}
+                  style={{ left: `${(x / 1469) * 100}%`, top: `${(y / 572) * 100}%` }}
+                >
+                  <button
+                    type="button"
+                    className="process-map-marker"
+                    aria-label={projects.length ? `${name}: ${projects.length} ${projects.length === 1 ? "proyecto" : "proyectos"}` : name}
+                    onClick={(event) => {
+                      const canHover = window.matchMedia("(hover: hover)").matches
+                      if (projects.length && canHover) {
+                        goToProject(projects[0].folderIndex, projects[0].entryIndex)
+                      } else {
+                        event.currentTarget.focus()
+                      }
+                    }}
+                  >
+                    {!projects.length && <span className="process-map-location" aria-hidden="true">{name}</span>}
+                  </button>
+                  {projects.length > 0 && (
+                    <div className="process-map-card">
+                      <p className="process-map-card-title">
+                        {name} <span>· {projects.length} {projects.length === 1 ? "proyecto" : "proyectos"}</span>
+                      </p>
+                      <ul className={`process-map-card-grid${projects.length === 1 ? " is-single" : ""}`}>
+                        {projects.slice(0, 4).map(({ folderIndex, entryIndex, entry }) => (
+                          <li key={`${folderIndex}-${entryIndex}`}>
+                            <button
+                              type="button"
+                              className="process-map-card-item"
+                              onClick={() => goToProject(folderIndex, entryIndex)}
+                            >
+                              <span className="process-map-card-photo">
+                                <Image src={entry.images[0]} alt="" fill sizes="160px" />
+                              </span>
+                              <span className="process-map-card-name">{entry.name}</span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                      {projects.length > 2 && (
+                        <button
+                          type="button"
+                          className={`process-map-card-more${projects.length > 4 ? "" : " is-mobile-only"}`}
+                          onClick={() => goToProject(projects[2].folderIndex, projects[2].entryIndex)}
+                        >
+                          Ver más proyectos en {name}
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
           </div>
         </section>
 
-        <section
-          id="projects"
-          ref={projectSectionRef}
-          className={`project-folders-section${activeProjectFolder >= 0 ? " is-project-open" : ""}`}
-          style={{ height: `calc(100svh + ${(projectFolders.length + 1) * 42}svh)` }}
-          aria-label="Proyectos de DEFRENTE"
-        >
-          <div className="project-folders-stage">
-            <div className="project-folders-bar project-folders-bar-top" aria-hidden="true" />
-            <div className="project-folders-bar project-folders-bar-bottom" aria-hidden="true" />
+        <section id="projects" className="project-folders-section" aria-label="Proyectos de DEFRENTE">
+          <div className="project-folders-bar project-folders-bar-top" aria-hidden="true" />
+          <div className="project-folders-bar project-folders-bar-bottom" aria-hidden="true" />
+
+          <div className="project-folders-layout">
             <header className="project-folders-heading">
               <p className="project-folders-kicker">Espacios que convierten</p>
               <h2>Proyectos</h2>
               <p className="project-folders-intro">Cada proyecto responde a un objetivo comercial <strong>concreto.</strong></p>
-              <p className="project-folders-note">Explora cada carpeta para conocer nuestros espacios.</p>
+              <p className="project-folders-note">Pulsa una pestaña de la carpeta para conocer cada espacio.</p>
             </header>
 
-            <div className="project-folder-stack">
-              {projectFolders.map((folder, index) => (
-                <article
-                  key={folder.name}
-                  className={`project-folder${activeProjectFolder === index ? " is-active" : ""}`}
-                  style={{
-                    "--folder-index": index,
-                    "--folder-color": folder.color,
-                    "--folder-text": folder.textColor,
-                  } as CSSProperties}
+            <div className="project-binder-wrap">
+              <div className="project-stack" style={{ "--stack-count": projectFolders.length } as CSSProperties}>
+                <div
+                  className="project-stack-layers"
+                  role="tablist"
+                  aria-label="Elegir proyecto"
+                  onKeyDown={(event) => {
+                    if (event.key === "ArrowDown" || event.key === "ArrowRight") {
+                      event.preventDefault()
+                      openProjectFolder(activeProjectFolder + 1)
+                    }
+                    if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
+                      event.preventDefault()
+                      openProjectFolder(activeProjectFolder - 1)
+                    }
+                  }}
                 >
-                  <button
-                    type="button"
-                    className="project-folder-tab"
-                    aria-label={`Ver proyecto ${folder.name}`}
-                    aria-pressed={activeProjectFolder === index}
-                    onClick={() => jumpToProjectFolder(index)}
+                  {projectFolders.map((folder, index) => (
+                    <div
+                      key={folder.name}
+                      role="presentation"
+                      className={`project-stack-layer${activeProjectFolder === index ? " is-active" : ""}`}
+                      style={{
+                        "--i": index,
+                        "--layer-color": folder.color,
+                        "--layer-text": folder.textColor,
+                      } as CSSProperties}
+                    >
+                      <button
+                        id={`project-tab-${index}`}
+                        type="button"
+                        role="tab"
+                        aria-selected={activeProjectFolder === index}
+                        aria-controls="project-binder-panel"
+                        tabIndex={activeProjectFolder === index ? 0 : -1}
+                        className="project-stack-tab"
+                        onClick={() => openProjectFolder(index)}
+                      >
+                        {folder.name}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="project-stack-body">
+                  <div
+                    className="project-binder-paper"
+                    role="tabpanel"
+                    id="project-binder-panel"
+                    aria-labelledby={`project-tab-${activeProjectFolder}`}
                   >
-                    {folder.name}
-                  </button>
-                  {activeProjectFolder === index && (
-                    <div className="project-folder-content">
-                      <div className={`project-folder-images project-folder-images-${folder.images.length}`}>
-                        {folder.images.map((image, imageIndex) => (
-                          <div className="project-folder-image" key={image}>
-                            <Image
-                              src={image}
-                              alt={`${folder.subtitle}, imagen ${imageIndex + 1}`}
-                              fill
-                              sizes="(max-width: 640px) 60vw, 580px"
-                              priority={index === 0}
-                            />
-                          </div>
-                        ))}
-                        <span className="project-folder-image-label">Proyecto · DEFRENTE</span>
-                      </div>
-                      <div className="project-folder-card">
-                        <div className="project-folder-card-heading">
-                          <span className="project-folder-number">{String(index + 1).padStart(2, "0")}.</span>
-                          <span className="project-folder-category">{folder.name}</span>
+                    <div className="project-binder-page" key={`page-${activeProjectFolder}`}>
+                      {activeFolder.projects.length > 1 && (
+                        <div className="project-binder-entries" role="group" aria-label={`Proyectos de ${activeFolder.name}`}>
+                          {activeFolder.projects.map((entry, entryIndex) => (
+                            <button
+                              key={`${entry.name}-${entry.place}`}
+                              type="button"
+                              className="project-binder-entry"
+                              aria-pressed={activeProjectEntry === entryIndex}
+                              onClick={() => openProjectEntry(entryIndex)}
+                            >
+                              {entry.service ? entry.name : entry.place.split(" · ")[0]}
+                            </button>
+                          ))}
                         </div>
-                        <h3>{folder.subtitle}</h3>
-                        <p>{folder.description}</p>
-                        <span className="project-folder-location">{folder.location}</span>
-                        <Link href="/portfolio" className="project-folder-link">
+                      )}
+
+                      <div className="project-binder-gallery">
+                        <div className="project-binder-photo">
+                          <Image
+                            key={activeEntry.images[activeProjectImage]}
+                            src={activeEntry.images[activeProjectImage]}
+                            alt={`${activeEntry.name}, ${activeEntry.place}, imagen ${activeProjectImage + 1}`}
+                            fill
+                            sizes="(max-width: 900px) 80vw, (max-width: 1450px) 42vw, 660px"
+                            className="project-binder-photo-image"
+                          />
+                          {activeEntry.images.length > 1 && (
+                            <>
+                              <button
+                                type="button"
+                                className="project-binder-photo-nav project-binder-photo-prev"
+                                aria-label="Imagen anterior"
+                                onClick={() => setActiveProjectImage((current) => (current - 1 + activeEntry.images.length) % activeEntry.images.length)}
+                              >
+                                <ArrowLeft aria-hidden="true" />
+                              </button>
+                              <button
+                                type="button"
+                                className="project-binder-photo-nav project-binder-photo-next"
+                                aria-label="Imagen siguiente"
+                                onClick={() => setActiveProjectImage((current) => (current + 1) % activeEntry.images.length)}
+                              >
+                                <ArrowRight aria-hidden="true" />
+                              </button>
+                              <span className="project-binder-photo-count">
+                                {activeProjectImage + 1} / {activeEntry.images.length}
+                              </span>
+                            </>
+                          )}
+                        </div>
+
+                        {activeEntry.images.length > 1 && (
+                          <div className="project-binder-thumbs" key={`thumbs-${activeProjectEntry}`} aria-label="Imágenes del proyecto">
+                            {activeEntry.images.map((image, imageIndex) => (
+                              <button
+                                key={image}
+                                type="button"
+                                className="project-binder-thumb"
+                                aria-label={`Ver imagen ${imageIndex + 1}`}
+                                aria-pressed={activeProjectImage === imageIndex}
+                                onClick={() => setActiveProjectImage(imageIndex)}
+                              >
+                                <Image src={image} alt="" fill sizes="96px" />
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="project-binder-card" key={`card-${activeProjectEntry}`}>
+                        <div className="project-binder-card-heading">
+                          <span className="project-binder-number">{String(activeProjectFolder + 1).padStart(2, "0")}.</span>
+                          <div>
+                            <span className="project-binder-category">{activeFolder.subtitle}</span>
+                            <h3>{activeEntry.name}</h3>
+                          </div>
+                        </div>
+                        <span className="project-binder-location">
+                          {activeEntry.place}{activeEntry.size ? ` · ${activeEntry.size}` : ""}
+                        </span>
+                        {activeEntry.service && (
+                          <p className="project-binder-service"><strong>Servicio:</strong> {activeEntry.service}</p>
+                        )}
+                        <p>{activeEntry.description ?? activeFolder.description}</p>
+                        <Link href="/portfolio" className="project-binder-link">
                           Ver todos los proyectos <span aria-hidden="true">→</span>
                         </Link>
                       </div>
                     </div>
-                  )}
-                </article>
-              ))}
+
+                    {projectPageTurn > 0 && <div className="project-binder-flip" key={`flip-${projectPageTurn}`} aria-hidden="true" />}
+                  </div>
+                </div>
+              </div>
+
+              <p className="project-folders-hint" aria-live="polite">
+                {String(activeProjectFolder + 1).padStart(2, "0")} / {String(projectFolders.length).padStart(2, "0")}
+              </p>
             </div>
-
-            <nav className="project-folder-pagination" aria-label="Elegir carpeta de proyecto">
-              {projectFolders.map((folder, index) => (
-                <button
-                  key={folder.name}
-                  type="button"
-                  aria-label={`Abrir carpeta ${folder.name}`}
-                  aria-pressed={activeProjectFolder === index}
-                  onClick={() => jumpToProjectFolder(index)}
-                />
-              ))}
-            </nav>
-
-            <p className="project-folders-hint" aria-hidden="true">
-              {activeProjectFolder < 0 ? "Desplaza para explorar" : `${String(activeProjectFolder + 1).padStart(2, "0")} / ${String(projectFolders.length).padStart(2, "0")}`}
-            </p>
           </div>
         </section>
 
-        <section id="contact" className="contact-section px-4 pb-5 pt-0 text-[#2b101d] sm:px-6 lg:px-8">
-          <div className="contact-paper relative mx-auto max-w-7xl px-5 pb-24 pt-0 sm:px-10 sm:pb-28 lg:px-16">
-            <div className="contact-intro relative -mx-5 mb-8 grid gap-8 px-6 py-20 text-[#f0e7bd] sm:-mx-10 sm:grid-cols-2 sm:items-center sm:gap-10 sm:px-10 sm:py-24 lg:-mx-16 lg:px-16">
-              <div className="relative z-10 text-center sm:text-left">
+        <section id="contact" className="contact-section text-[#2b101d]">
+          <div className="contact-paper relative mx-auto">
+            <div className="contact-intro relative grid gap-6 px-6 py-10 text-[#f0e7bd] sm:grid-cols-2 sm:items-center sm:gap-10 sm:px-10 sm:py-12 lg:px-16">
+              <div className="contact-intro-left relative z-10 text-center">
+                <Image
+                  src="/logos/icono-negro.png"
+                  alt=""
+                  width={700}
+                  height={507}
+                  aria-hidden="true"
+                  className="contact-intro-watermark"
+                />
                 <h2 className="contact-intro-wordmark">
                   <span>ESPACIOS</span>
                   <span>QUE CONVIERTEN</span>
                 </h2>
-                <p className="mx-auto mt-5 max-w-xl text-base leading-6 sm:mx-0 sm:text-lg">
+                <p className="contact-intro-lead">
                   Cuéntanos sobre ese espacio comercial, oficina o franquicia que quieres hacer más rentable.
                 </p>
               </div>
-              <div className="relative z-10 text-center sm:pl-4">
+              <div className="contact-intro-right relative z-10 text-center">
                 <h3 className="contact-intro-highlight">Analizamos tu caso</h3>
-                <p className="mx-auto mt-2 max-w-lg text-xl leading-tight sm:text-2xl">
+                <p className="contact-intro-sub">
                   y te decimos qué se puede hacer antes de intervenirlo.
                 </p>
               </div>
             </div>
 
             {!isContactFormOpen ? (
-              <div ref={contactStageRef} className="contact-stage relative flex min-h-[34rem] items-center justify-center">
+              <div ref={contactStageRef} className="contact-stage relative flex items-center justify-center">
                 <div className="contact-bars" aria-hidden="true">
                   {Array.from({ length: 22 }, (_, index) => (
                     <span key={index} className="contact-bar" />
                   ))}
                 </div>
-                <div className="contact-stage-content relative z-10 flex flex-col items-center gap-5 text-center">
-                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#2b101d]/65">
-                    Hablemos de tu próximo proyecto
-                  </p>
+                <div className="contact-stage-content relative text-center">
                   <button
                     type="button"
                     aria-expanded={false}
@@ -1092,7 +1374,7 @@ export default function Home() {
                 </div>
               </div>
             ) : (
-              <div id="contact-form-panel" className="contact-form-panel relative z-10 mx-auto max-w-4xl py-10 sm:py-14">
+              <div id="contact-form-panel" className="contact-form-panel relative z-10 mx-auto max-w-4xl px-6 py-10 sm:px-10 sm:py-14">
                 <div className="mb-8 flex justify-end">
                   <button
                     type="button"
@@ -1170,10 +1452,9 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="bg-[#2b101d] px-4 py-5 text-[#2b101d] sm:px-6 lg:px-8">
-        <div className="mx-auto w-full max-w-7xl">
-          <div className="footer-directory grid items-start gap-6 px-6 pb-5 pt-6 text-[#f0e7bd] sm:px-10 lg:grid-cols-[1fr_auto_auto] lg:gap-16 lg:px-14">
-            <div className="hidden lg:block" aria-hidden="true" />
+      <footer className="site-footer text-[#2b101d]">
+        <div className="site-footer-inner">
+          <div className="footer-directory text-[#f0e7bd]">
             <nav aria-label="Servicios del estudio">
               <h2 className="footer-directory-heading">Servicios</h2>
               <ul className="mt-2 space-y-0.5">
@@ -1195,18 +1476,18 @@ export default function Home() {
             </nav>
           </div>
 
-          <div className="footer-folder-panel grid gap-10 bg-[#f0e7bd] px-6 py-12 sm:px-10 sm:py-14 lg:grid-cols-2 lg:gap-x-12 lg:gap-y-8 lg:px-14 lg:py-14">
-            <div className="flex items-start justify-between lg:col-span-2">
+          <div className="footer-folder-panel bg-[#f0e7bd]">
+            <div className="footer-brand-row">
               <Link href="/" className="inline-flex" aria-label="DEFRENTE, inicio">
                 <Image
                   src="/logos/logo_nuevo.png"
                   alt="DEFRENTE"
                   width={2402}
                   height={1260}
-                  className="footer-logo h-auto w-56 sm:w-72"
+                  className="footer-logo h-auto"
                 />
               </Link>
-              <div className="flex items-center gap-5 text-[#2b101d]" role="group" aria-label="Redes sociales">
+              <div className="footer-socials" role="group" aria-label="Redes sociales">
                 <span aria-label="Instagram" title="Instagram"><Instagram className="h-6 w-6" /></span>
                 <span aria-label="Facebook" title="Facebook"><Facebook className="h-6 w-6" /></span>
                 <span aria-label="LinkedIn" title="LinkedIn"><Linkedin className="h-6 w-6" /></span>
@@ -1216,7 +1497,7 @@ export default function Home() {
             <div className="footer-newsletter-block">
               <h2 className="footer-newsletter-title">Newsletter</h2>
               <div
-                className="newsletter-signup mt-5 flex min-h-14 w-full max-w-md items-stretch gap-2"
+                className="newsletter-signup mt-3 flex min-h-10 w-full items-stretch gap-1"
                 onMouseEnter={() => setIsNewsletterFieldActive(true)}
                 onMouseLeave={(event) => {
                   if (!event.currentTarget.contains(document.activeElement)) {
@@ -1242,8 +1523,8 @@ export default function Home() {
                     setNewsletterEmail(event.currentTarget.value)
                     setIsNewsletterEmailValid(event.currentTarget.validity.valid && event.currentTarget.value.trim().length > 0)
                   }}
-                  placeholder="Tu email"
-                  className="min-w-0 flex-1 border border-[#2b101d]/15 bg-[#2b101d] px-5 py-4 text-sm text-[#f0e7bd] outline-none transition-colors placeholder:text-[#f0e7bd]/50 focus:border-[#9c7953] focus:ring-1 focus:ring-[#9c7953]"
+                  placeholder="email"
+                  className="min-w-0 flex-1 border border-[#2b101d]/15 bg-[#2b101d] px-3 py-2 text-sm text-[#f0e7bd] outline-none transition-colors placeholder:text-[#f0e7bd]/50 focus:border-[#9c7953] focus:ring-1 focus:ring-[#9c7953]"
                 />
                 <button
                   type="button"
@@ -1258,12 +1539,12 @@ export default function Home() {
               </div>
             </div>
 
-            <p className="footer-newsletter-description self-end text-sm leading-6 text-[#2b101d]/85 lg:pb-1">
+            <p className="footer-newsletter-description">
               Ideas de retail que aumentan ventas, una vez al mes.
             </p>
           </div>
 
-          <div className="flex flex-col gap-4 px-2 py-6 text-sm text-[#f0e7bd] sm:flex-row sm:items-center sm:justify-between sm:px-4">
+          <div className="footer-legal text-[#f0e7bd]">
             <p>© 2026 DEFRENTE · Europa y Latinoamérica</p>
             <div className="flex flex-col gap-2 sm:flex-row sm:gap-6">
               <a href="mailto:defrente.es@gmail.com" className="transition-colors hover:text-white">defrente.es@gmail.com</a>
