@@ -1,6 +1,6 @@
 const roomService = "Diseño de áreas de descanso y estancia para sector hotelero."
 const roomDescription =
-  "Una habitación pensada para el confort y la funcionalidad. El mobiliario de líneas suaves, los materiales cálidos y una distribución equilibrada crean un ambiente acogedor y coherente con la identidad del hotel."
+  "Diseño de una habitación orientada a mejorar el confort, la funcionalidad y la experiencia del huésped. La propuesta integra mobiliario de líneas suaves, materiales cálidos y una distribución equilibrada para crear un ambiente acogedor, contemporáneo y coherente con la identidad del hotel."
 
 export const hospitalityProjects = [
   {
@@ -10,7 +10,7 @@ export const hospitalityProjects = [
     area: 285,
     photos: ["hotel-santo-domingo/1.png", "hotel-santo-domingo/2.png", "hotel-santo-domingo/3.webp", "hotel-santo-domingo/4.webp"],
     service: "Diseño de lobby y áreas de recepción para hotel.",
-    description: "Diseñamos un lobby que mejora la llegada del huésped y refuerza la identidad del hotel. La vegetación es la protagonista y aporta frescura, confort y una conexión natural en pleno centro de Madrid.",
+    description: "Diseño de un lobby orientado a mejorar la experiencia de llegada y reforzar la identidad del hotel. La propuesta integra vegetación como elemento protagonista para aportar frescura, confort y una conexión más natural dentro del entorno urbano de Madrid.",
   },
   {
     name: "Hotel Santo Domingo · Habitación tipo A",
@@ -46,7 +46,16 @@ export const hospitalityProjects = [
     area: 20,
     photos: ["lobby-airbnb/1.png"],
     service: "Diseño de lobby distribuidor y espacio de transición para alojamiento turístico.",
-    description: "Un espacio de llegada que mejora la experiencia del huésped desde el primer contacto. La vegetación, la iluminación cálida y una composición ligera dan identidad y suavizan la transición hacia el resto del alojamiento.",
+    description: "Diseño de un espacio de llegada y distribución que mejora la experiencia del huésped desde el primer contacto. La propuesta integra vegetación, iluminación cálida y una composición ligera para aportar identidad, frescura y una transición más agradable hacia las distintas áreas del alojamiento.",
+  },
+  {
+    name: "Cafetería Ovejitas Negras",
+    location: "Quito",
+    year: 2025,
+    area: 152,
+    photos: ["cafeteria-ovejitas-negras/1.png", "cafeteria-ovejitas-negras/2.png"],
+    service: "Diseño de cafetería y espacios de networking empresarial.",
+    description: "Diseño de un concepto híbrido que integra cafetería, áreas de networking y espacios de encuentro para jóvenes emprendedores. La propuesta busca favorecer la conexión entre usuarios, el intercambio de ideas y la creación de nuevas oportunidades, incorporando zonas flexibles para reuniones, colaboración y desarrollo de iniciativas empresariales.",
   },
 ]
 

@@ -8,7 +8,7 @@ import { hospitalityPhotoPath, hospitalityProjects } from "@/lib/hospitality-pro
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { ArrowLeft, ArrowRight, Facebook, Instagram, Linkedin, Menu, X } from "lucide-react"
+import { ArrowLeft, ArrowRight, Instagram, Linkedin, Menu, X } from "lucide-react"
 
 function NavLinkFrame() {
   return (
@@ -21,83 +21,56 @@ function NavLinkFrame() {
   )
 }
 
-const projectMapLocations: { name: string; x: number; y: number; match?: string[] }[] = [
-  { name: "México", x: 87, y: 60, match: ["México"] },
-  { name: "Quito", x: 155, y: 232, match: ["Quito", "Cumbayá"] },
-  { name: "Galway", x: 764, y: 141 },
-  { name: "Francia", x: 872, y: 274 },
-  { name: "La Coruña", x: 718, y: 338 },
-  { name: "Pontevedra", x: 732, y: 354 },
-  { name: "San Sebastián", x: 784, y: 362, match: ["San Sebastián"] },
-  { name: "Valencia", x: 810, y: 412 },
-  { name: "Suiza", x: 958, y: 310 },
-  { name: "Praga", x: 1066, y: 255, match: ["Praga"] },
-  { name: "Viena", x: 1066, y: 294 },
-  { name: "Rumanía", x: 1200, y: 331, match: ["Rumanía"] },
-  { name: "Serbia", x: 1135, y: 371 },
-  { name: "Macedonia", x: 1160, y: 416 },
-  { name: "Chipre", x: 1328, y: 517, match: ["Chipre"] },
+// Mapa: un pin por país, sin fotos. "side" indica a qué lado va el nombre.
+const projectMapCountries: { name: string; cities?: string; x: number; y: number; side?: "left" | "right" }[] = [
+  { name: "México", cities: "Ciudad de México, Tulum", x: 87, y: 60 },
+  { name: "Ecuador", cities: "Quito", x: 155, y: 232 },
+  { name: "Irlanda", cities: "Galway", x: 764, y: 141, side: "left" },
+  { name: "España", cities: "Madrid, Marbella, San Sebastián, Valencia, La Coruña, Pontevedra", x: 762, y: 395, side: "left" },
+  { name: "Francia", x: 872, y: 274, side: "left" },
+  { name: "Suiza", x: 958, y: 310, side: "left" },
+  { name: "Polonia", x: 1108, y: 205 },
+  { name: "Chequia", cities: "Praga", x: 1066, y: 255 },
+  { name: "Austria", cities: "Viena", x: 1066, y: 294 },
+  { name: "Rumanía", x: 1200, y: 331 },
+  { name: "Serbia", x: 1135, y: 371, side: "left" },
+  { name: "Macedonia del Norte", x: 1160, y: 416 },
+  { name: "Chipre", x: 1328, y: 517, side: "left" },
 ]
 
 const processPhases = [
   {
-    category: "Consultoría",
+    category: "Primera fase",
     title: "Diagnóstico estratégico",
     description: "Estudiamos tu proyección de ventas, tu cliente, tu producto y tu recorrido de compra. Definimos qué debe lograr el espacio antes de dibujar una línea.",
-    image: "/rueda/25.jpg",
   },
   {
-    category: "Diseño",
-    title: "Concepto de marca",
-    description: "Traducimos la esencia de tu marca en una experiencia clara, reconocible y pensada para conectar con tus clientes.",
-    image: "/rueda/26.jpg",
+    category: "Segunda fase",
+    title: "Diseño",
+    description: "Traducimos la estrategia en layout y recorrido, distribución, materiales, mobiliario especificado, iluminación y frente.",
   },
   {
-    category: "Espacio",
-    title: "Arquitectura comercial",
-    description: "Diseñamos espacios funcionales que equilibran circulación, exposición de producto y experiencia de compra.",
-    image: "/rueda/27.jpg",
-  },
-  {
-    category: "Identidad",
-    title: "Universo visual",
-    description: "Definimos colores, texturas y materiales para construir una identidad coherente en cada punto de contacto.",
-    image: "/rueda/28.jpg",
-  },
-  {
-    category: "Materialidad",
-    title: "Selección de acabados",
-    description: "Elegimos materiales y acabados que expresan el concepto, resisten el uso y acompañan la operación diaria.",
-    image: "/rueda/29.jpg",
-  },
-  {
-    category: "Experiencia",
-    title: "Recorrido de cliente",
-    description: "Organizamos el espacio para que descubrir, elegir y comprar resulte intuitivo y agradable.",
-    image: "/rueda/30.jpg",
-  },
-  {
-    category: "Desarrollo",
-    title: "Diseño de proyecto",
-    description: "Convertimos la estrategia en planos y decisiones concretas, coordinando cada detalle antes de la ejecución.",
-    image: "/rueda/31.jpg",
-  },
-  {
-    category: "Estrategia",
-    title: "Plan de crecimiento",
-    description: "Alineamos el diseño con los objetivos del negocio para crear una propuesta viable y replicable.",
-    image: "/rueda/32.jpg",
-  },
-  {
-    category: "Implantación",
-    title: "Espacio que convierte",
-    description: "Acompañamos la materialización del concepto para que el resultado conserve la intención y calidad del proyecto.",
-    image: "/rueda/33.jpg",
+    category: "Tercera fase",
+    title: "Ejecución y resultados",
+    description: "Ejecutamos o entregamos listo para ejecutar, y auditamos el montaje. El resultado se mide en el negocio.",
   },
 ]
 
+// Fotos de la rueda: las 3 fases se repiten a lo largo de los 9 sectores
+const processWheelImages = [
+  "/rueda/25.jpg",
+  "/rueda/26.jpg",
+  "/rueda/27.jpg",
+  "/rueda/28.jpg",
+  "/rueda/29.jpg",
+  "/rueda/30.jpg",
+  "/rueda/31.jpg",
+  "/rueda/32.jpg",
+  "/rueda/33.jpg",
+]
+
 function getProcessSectorClipPath(index: number) {
-  const count = processPhases.length
+  const count = processWheelImages.length
   const step = 360 / count
   const gap = 0
   const start = index * step - step / 2 + gap / 2
@@ -126,6 +99,8 @@ type ProjectEntry = {
   service?: string
   description?: string
   images: string[]
+  // Partes de un proyecto (p. ej. lobby y habitaciones): cada una empieza en la imagen "from"
+  sections?: { label: string; from: number; size?: string; service?: string; description?: string }[]
 }
 
 const imageSeries = (folder: string, files: string[]) => files.map((file) => `${folder}/${file}.webp`)
@@ -141,6 +116,39 @@ const standPortfolioGroups = standProjectGroups.map(({ projects }) =>
   })),
 )
 
+// Las habitaciones tipo A y B se muestran dentro de "Hotel Santo Domingo"
+const hospitalityPortfolio = hospitalityProjects
+  .filter(({ name }) => !name.startsWith("Hotel Santo Domingo · "))
+  .map(({ name, location, year, area, photos, service, description }): ProjectEntry => {
+    const rooms = hospitalityProjects.filter((project) => project.name.startsWith(`${name} · `))
+    let nextImage = photos.length
+    const sections = rooms.length > 0
+      ? [
+          { label: "Lobby y recepción", from: 0, size: area + " m²", service, description },
+          ...rooms.map((room) => {
+            const section = {
+              label: room.name.slice(name.length + 3),
+              from: nextImage,
+              size: room.area + " m²",
+              service: room.service,
+              description: room.description,
+            }
+            nextImage += room.photos.length
+            return section
+          }),
+        ]
+      : undefined
+    return {
+      name,
+      place: location + ", " + year,
+      size: area + " m²",
+      service,
+      description,
+      images: [...photos, ...rooms.flatMap((room) => room.photos)].map(hospitalityPhotoPath),
+      sections,
+    }
+  })
+
 const projectFolders: {
   name: string
   subtitle: string
@@ -150,18 +158,20 @@ const projectFolders: {
   projects: ProjectEntry[]
 }[] = [
   {
-    name: "Feria",
-    subtitle: "Stand de feria · Efímero",
+    name: "Comercial",
+    subtitle: "Arquitectura comercial · Retail",
     color: "#3f1f2c",
     textColor: "#fffaf3",
-    description: "Un stand de joyería de autoservicio diseñado para dar visibilidad al producto y aprovechar cada metro cuadrado.",
+    description: "Diseñamos recorridos claros y ambientes que conectan la experiencia de compra con la identidad de cada marca.",
     projects: [
       {
-        name: "Stand de joyería",
-        place: "México DF, 2024",
-        size: "12 m²",
-        images: imageSeries("/corner_popup/mexico", ["2", "2.1", "2.2", "2.3"]),
+        name: "Sistema modular de exposición",
+        place: "San Sebastián, 2023",
+        service: "Diseño y testeo de sistema modular de mobiliario expositivo.",
+        description: "Desarrollo de un sistema modular compuesto por piezas independientes que pueden reorganizarse y desplazarse según las necesidades del espacio. El diseño juega con distintas alturas para jerarquizar el producto, mejorar su visibilidad y permitir configuraciones flexibles. El prototipo fue validado satisfactoriamente en fase de testeo.",
+        images: imageSeries("/comercial/madrid", ["1", "2", "3", "4", "5"]),
       },
+      ...standPortfolioGroups[1],
     ],
   },
   {
@@ -215,82 +225,58 @@ const projectFolders: {
         description: "Rediseño de áreas destinadas al descanso y bienestar del equipo, priorizando confort y funcionalidad. La propuesta incorpora zonas recreativas y de pausa que mejoran la experiencia del personal dentro del entorno de trabajo.",
         images: imageSeries("/proyectos/corporativo/artro", ["1", "2", "3", "4", "5", "6"]),
       },
+      {
+        name: "Área infantil · Biblioteca",
+        place: "Quito · Ecuador",
+        size: "65 m²",
+        description: "Desarrollo de espacio recreativo infantil, diseño y planificación.",
+        images: imageSeries("/comercial/quito", ["1", "2", "3", "4"]),
+      },
     ],
   },
   {
-    name: "Local",
-    subtitle: "Arquitectura comercial · Local",
+    name: "Stands",
+    subtitle: "Stands, corners & pop-ups",
     color: "#93626f",
     textColor: "#fffaf3",
-    description: "Diseñamos recorridos claros y ambientes que conectan la experiencia de compra con la identidad de cada marca.",
-    projects: [
-      {
-        name: "Sistema modular de exposición",
-        place: "San Sebastián, 2023",
-        service: "Diseño y testeo de sistema modular de mobiliario expositivo.",
-        description: "Desarrollo de un sistema modular compuesto por piezas independientes que pueden reorganizarse y desplazarse según las necesidades del espacio. El diseño juega con distintas alturas para jerarquizar el producto, mejorar su visibilidad y permitir configuraciones flexibles. El prototipo fue validado satisfactoriamente en fase de testeo.",
-        images: imageSeries("/comercial/madrid", ["1", "2", "3", "4", "5"]),
-      },
-      { name: "Local comercial", place: "Quito · Ecuador", images: imageSeries("/comercial/quito", ["1", "2", "3", "4"]) },
-      { name: "Local comercial II", place: "Quito · Ecuador", images: imageSeries("/comercial/quito1", ["1", "1.1", "2"]) },
-      ...standPortfolioGroups[1],
-    ],
-  },
-  {
-    name: "Hotelería",
-    subtitle: "Hotelería · Hospitality",
-    color: "#a47d86",
-    textColor: "#fffaf3",
-    description: "Lugares de estancia acogedores que equilibran bienestar, funcionalidad y una experiencia memorable.",
-    projects: [
-      ...hospitalityProjects.map(({ name, location, year, area, photos, service, description }): ProjectEntry => ({
-        name,
-        place: location + ", " + year,
-        size: area + " m²",
-        service,
-        description,
-        images: photos.map(hospitalityPhotoPath),
-      })),
-    ],
-  },
-  {
-    name: "Efímero",
-    subtitle: "Corner & pop-up · Centro comercial",
-    color: "#b08a92",
-    textColor: "#2b101d",
     description: "Formatos temporales que hacen visible tu marca y permiten llevar la experiencia de compra a nuevos espacios.",
     projects: [
-      { name: "Pop-up", place: "Tulum · México", images: imageSeries("/corner_popup/tulum", ["1", "1.2", "1.3", "1.4"]) },
-      { name: "Corner", place: "México DF", images: imageSeries("/corner_popup/mexico1", ["1", "2"]) },
+      { name: "Tulum", place: "Tulum · México", images: imageSeries("/corner_popup/tulum", ["1", "1.2", "1.3", "1.4"]) },
+      { name: "México DF", place: "México DF", images: imageSeries("/corner_popup/mexico1", ["1", "2"]) },
       ...standPortfolioGroups[0],
     ],
   },
   {
-    name: "Joyería",
-    subtitle: "Joyería & accesorios · España",
-    color: "#dec3c8",
-    textColor: "#5a2f3c",
-    description: "Espacios donde iluminación, materiales y recorrido ponen el producto en el centro de la experiencia.",
-    projects: [
-      { name: "Joyería", place: "Mallorca · España", images: imageSeries("/joyeria/mallorca", ["2", "1"]) },
-      { name: "Joyería", place: "México DF", images: imageSeries("/joyeria/mexicodf", ["4", "1", "2", "3"]) },
-      { name: "Joyería", place: "Puerto Banús · España", images: imageSeries("/joyeria/puertobanus", ["1", "2", "3", "4"]) },
-    ],
+    name: "Hospitality",
+    subtitle: "Hotelería · Hospitality",
+    color: "#a47d86",
+    textColor: "#fffaf3",
+    description: "Lugares de estancia acogedores que equilibran bienestar, funcionalidad y una experiencia memorable.",
+    projects: hospitalityPortfolio,
   },
 ]
 
-const mapLocations = projectMapLocations.map((location) => ({
-  ...location,
-  projects: projectFolders
-    .flatMap((folder, folderIndex) => folder.projects.map((entry, entryIndex) => ({ folderIndex, entryIndex, entry })))
-    .filter(({ entry }) => location.match?.some((keyword) => entry.place.includes(keyword))),
-}))
+const beforeAfterCases = [
+  {
+    name: "tienda MiraMira",
+    before: "/antes_despues/Miramira_ANTES_separada.png",
+    after: "/antes_despues/Miramira_DESPUES_separada.png",
+  },
+  {
+    name: "cafetería",
+    before: "/antes_despues/Cafeteria_ANTES.png",
+    after: "/antes_despues/Cafeteria_DESPUES.png",
+  },
+]
 
 export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeServiceCard, setActiveServiceCard] = useState(0)
   const [processTurn, setProcessTurn] = useState(0)
   const processTouchStartX = useRef<number | null>(null)
+  const processStageRef = useRef<HTMLDivElement | null>(null)
+  const [isProcessPaused, setIsProcessPaused] = useState(false)
+  const [isProcessVisible, setIsProcessVisible] = useState(false)
   const caseCompareRef = useRef<HTMLDivElement | null>(null)
   const contactStageRef = useRef<HTMLDivElement | null>(null)
   const [isContactFormOpen, setIsContactFormOpen] = useState(false)
@@ -302,7 +288,27 @@ export default function Home() {
   const [activeProjectEntry, setActiveProjectEntry] = useState(0)
   const [activeProjectImage, setActiveProjectImage] = useState(0)
   const [projectPageTurn, setProjectPageTurn] = useState(0)
+  const [activeBeforeAfter, setActiveBeforeAfter] = useState(0)
   const activeProcessPhase = ((processTurn % processPhases.length) + processPhases.length) % processPhases.length
+  const activeProcessSector = ((processTurn % processWheelImages.length) + processWheelImages.length) % processWheelImages.length
+
+  // La rueda solo gira cuando está en pantalla
+  useEffect(() => {
+    const stage = processStageRef.current
+    if (!stage) return
+    const observer = new IntersectionObserver(([entry]) => setIsProcessVisible(entry.isIntersecting))
+    observer.observe(stage)
+    return () => observer.disconnect()
+  }, [])
+
+  // Gira sola cada 4 s; se detiene con el ratón encima o al usarla, y cuenta de nuevo tras cada giro manual
+  useEffect(() => {
+    if (isProcessPaused || !isProcessVisible) return
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
+    const timer = window.setTimeout(() => setProcessTurn((turn) => turn + 1), 4000)
+    return () => window.clearTimeout(timer)
+  }, [processTurn, isProcessPaused, isProcessVisible])
+
   useEffect(() => {
     const compare = caseCompareRef.current
     if (!compare) return
@@ -387,11 +393,23 @@ export default function Home() {
       const delta = Math.min(now - lastFrame, 50)
       lastFrame = now
       if (automatic && visible && !drag && !reducedMotion) {
+        const previousCycle = Math.floor(phase / (Math.PI * 2))
         phase += delta * speed
+        // Al terminar una pasada completa (antes y después) pasa al siguiente caso
+        if (Math.floor(phase / (Math.PI * 2)) > previousCycle) {
+          setActiveBeforeAfter((current) => (current + 1) % beforeAfterCases.length)
+        }
         setPosition(midpoint + amplitude * Math.sin(phase))
       }
       if (visible && !reducedMotion) animationFrame = window.requestAnimationFrame(loop)
     }
+
+    // Sin animación automática, los casos se alternan cada 10 segundos
+    const reducedMotionTimer = reducedMotion
+      ? window.setInterval(() => {
+          setActiveBeforeAfter((current) => (current + 1) % beforeAfterCases.length)
+        }, 10000)
+      : undefined
 
     setPosition(midpoint)
     observer.observe(compare)
@@ -405,6 +423,7 @@ export default function Home() {
       observer.disconnect()
       window.cancelAnimationFrame(animationFrame)
       window.clearTimeout(idleTimer)
+      window.clearInterval(reducedMotionTimer)
       compare.removeEventListener("pointerdown", onPointerDown)
       compare.removeEventListener("pointermove", onPointerMove)
       compare.removeEventListener("pointerup", onPointerUp)
@@ -594,14 +613,6 @@ export default function Home() {
     setProjectPageTurn((turn) => turn + 1)
   }
 
-  const goToProject = (folderIndex: number, entryIndex: number) => {
-    if (folderIndex !== activeProjectFolder) setProjectPageTurn((turn) => turn + 1)
-    setActiveProjectFolder(folderIndex)
-    setActiveProjectEntry(entryIndex)
-    setActiveProjectImage(0)
-    document.getElementById("projects")?.scrollIntoView({ behavior: "smooth", block: "start" })
-  }
-
   const openProjectEntry = (index: number) => {
     setActiveProjectEntry(index)
     setActiveProjectImage(0)
@@ -609,52 +620,47 @@ export default function Home() {
 
   const activeFolder = projectFolders[activeProjectFolder]
   const activeEntry = activeFolder.projects[activeProjectEntry] ?? activeFolder.projects[0]
+  const activeSection = activeEntry.sections?.filter((section) => section.from <= activeProjectImage).at(-1)
 
   const serviceCards = [
     {
       number: "01",
       image: "/servicios%20tarjetas/Portada%20locales.png",
       imageAlt: "Interior de una joyería con exhibidores",
-      category: "LOCALES",
-      title: "Locales comerciales",
-      description: "Optimizamos el recorrido y analizamos tus objetivos para atraer más clientes y convertir más visitas en ventas.",
+      category: "SERVICIO",
+      title: "Consultoría",
+      forWho: "Marcas con equipo propio de obra o proveedores, o que quieren decidir antes de invertir.",
+      includes: "Diagnóstico del local, estrategia de recorrido y zonificación, diseño (layout, mobiliario, iluminación, materialidad), manual de tienda.",
+      deliverable: "Documentos y criterios listos para ejecutar.",
     },
     {
       number: "02",
-      href: "/servicios/corporativo",
-      image: "/servicios%20tarjetas/Portada%20Corporativo.png",
-      imageAlt: "Oficina con zona de estar y mesas de trabajo",
-      category: "CORPORATIVO",
-      title: "Oficinas y espacios corporativos",
-      description: "Oficinas, sedes y áreas de atención para mejorar la operación, la experiencia interna y el rendimiento del equipo.",
+      image: "/comercial/quito1/2.webp",
+      imageAlt: "Interior comercial con mesas y sillas",
+      category: "SERVICIO",
+      title: "Ejecución",
+      forWho: "Marcas que ya tienen un concepto definido y necesitan llevarlo al local.",
+      includes: "Implementación, coordinación de proveedores, supervisión de obra, adaptación a locales reales y checklist de control.",
+      deliverable: "Local construido según diseño.",
     },
     {
       number: "03",
-      image: "/comercial/quito1/2.webp",
-      imageAlt: "Interior comercial con mesas y sillas",
-      category: "EXPANSIÓN",
-      title: "Franquicias y expansión",
-      description: "Un modelo de tienda replicable que protege tu marca, facilita futuras aperturas y acompaña tu plan de crecimiento.",
-    },
-    {
-      number: "04",
-      href: "/servicios/stands",
-      image: "/servicios%20tarjetas/Portada%20stands.png",
-      imageAlt: "Stand de joyería MiraMira",
-      category: "EFÍMERO",
-      title: "Stands, pop-ups y corners",
-      description: "Tu marca vendiendo fuera de casa: ferias y campañas para probar el mercado.",
-    },
-    {
-      number: "05",
-      href: "/servicios/hospitality",
-      image: "/servicios%20tarjetas/hospitaly.png",
-      imageAlt: "Sala y comedor con iluminación cálida",
-      category: "HOSPITALITY",
-      title: "Hoteles y hospitalidad",
-      description: "Consultoría y diseño para el sector hotelero y restaurantes, enfocada en la acogida, el bienestar y la atención al cliente.",
+      image: "/servicios%20tarjetas/Portada%20Corporativo.png",
+      imageAlt: "Oficina con zona de estar y mesas de trabajo",
+      category: "SERVICIO",
+      title: "360°",
+      forWho: "Marcas que quieren un solo responsable de principio a fin.",
+      includes: "Consultoría + Ejecución + auditoría post-montaje.",
+      deliverable: "Local operando y validado.",
     },
   ]
+
+  const openContactForm = () => {
+    setIsContactFormOpen(true)
+    window.requestAnimationFrame(() => {
+      document.getElementById("contact-form-panel")?.scrollIntoView({ behavior: "smooth", block: "start" })
+    })
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -797,16 +803,32 @@ export default function Home() {
                 e impulse la compra.
               </p>
             </div>
-            <div className="service-showcase-art" aria-hidden="true">
-              <Image
-                src="/comercial/servicios/logo_diseno.png"
-                alt=""
-                width={1680}
-                height={390}
-                sizes="(max-width: 768px) 58vw, 78vw"
-                priority
-                className="service-showcase-art-image"
-              />
+            <div className="service-showcase-media">
+              <div className="service-showcase-art" aria-hidden="true">
+                <Image
+                  src="/comercial/servicios/logo_diseno.png"
+                  alt=""
+                  width={1680}
+                  height={390}
+                  sizes="(max-width: 768px) 58vw, 78vw"
+                  priority
+                  className="service-showcase-art-image"
+                />
+              </div>
+              <ul className="service-showcase-stats" aria-label="Metros cuadrados desarrollados">
+                <li>
+                  <strong>+1331 m²</strong>
+                  <span>desarrollados en retail</span>
+                </li>
+                <li>
+                  <strong>+550 m²</strong>
+                  <span>desarrollados en hotelería</span>
+                </li>
+                <li>
+                  <strong>+131 m²</strong>
+                  <span>desarrollados en food service</span>
+                </li>
+              </ul>
             </div>
           </div>
 
@@ -870,10 +892,28 @@ export default function Home() {
                             <h3>{card.title}</h3>
                           </div>
                         </div>
-                        <p className="service-card-description">{card.description}</p>
-                        <Link href={card.href ?? "#services-carousel"} tabIndex={position === 0 ? 0 : -1} className="service-card-link">
-                          Ver servicio <span aria-hidden="true">→</span>
-                        </Link>
+                        <dl className="service-card-details">
+                          <div>
+                            <dt>Para quién</dt>
+                            <dd>{card.forWho}</dd>
+                          </div>
+                          <div>
+                            <dt>Qué incluye</dt>
+                            <dd>{card.includes}</dd>
+                          </div>
+                          <div>
+                            <dt>Entregable</dt>
+                            <dd>{card.deliverable}</dd>
+                          </div>
+                        </dl>
+                        <button
+                          type="button"
+                          tabIndex={position === 0 ? 0 : -1}
+                          className="service-card-link"
+                          onClick={openContactForm}
+                        >
+                          Solicitar servicio <span aria-hidden="true">→</span>
+                        </button>
                       </div>
                     </article>
                   )
@@ -947,34 +987,41 @@ export default function Home() {
             </div>
 
             <figure className="featured-case-visual">
-              <div className="featured-case-side" aria-hidden="true" />
               <div className="featured-case-photo">
                 <div
                   ref={caseCompareRef}
                   className="featured-case-compare"
                   role="slider"
-                  aria-label="Comparar el antes y el después de la tienda MiraMira"
+                  aria-label={`Comparar el antes y el después: ${beforeAfterCases[activeBeforeAfter].name}`}
                   aria-valuemin={0}
                   aria-valuemax={100}
                   aria-valuenow={50}
                   tabIndex={0}
                 >
-                  <Image
-                    src="/antes_despues/Miramira_ANTES_separada.png"
-                    alt=""
-                    fill
-                    sizes="(max-width: 768px) 100vw, 68vw"
-                    className="featured-case-image"
-                  />
-                  <div className="featured-case-after-image">
-                    <Image
-                      src="/antes_despues/Miramira_DESPUES_separada.png"
-                      alt=""
-                      fill
-                      sizes="(max-width: 768px) 100vw, 68vw"
-                      className="featured-case-image"
-                    />
-                  </div>
+                  {beforeAfterCases.map((item, index) => (
+                    <div
+                      key={item.name}
+                      className={`featured-case-slide${index === activeBeforeAfter ? " is-active" : ""}`}
+                      aria-hidden={index !== activeBeforeAfter}
+                    >
+                      <Image
+                        src={item.before}
+                        alt=""
+                        fill
+                        sizes="(max-width: 768px) 100vw, 68vw"
+                        className="featured-case-image"
+                      />
+                      <div className="featured-case-after-image">
+                        <Image
+                          src={item.after}
+                          alt=""
+                          fill
+                          sizes="(max-width: 768px) 100vw, 68vw"
+                          className="featured-case-image"
+                        />
+                      </div>
+                    </div>
+                  ))}
                   <div className="featured-case-image-overlay" aria-hidden="true" />
                   <span className="featured-case-label featured-case-label-before" aria-hidden="true">ANTES</span>
                   <span className="featured-case-label featured-case-label-after" aria-hidden="true">DESPUÉS</span>
@@ -999,10 +1046,17 @@ export default function Home() {
           </div>
 
           <div
+            ref={processStageRef}
             className="process-wheel-stage"
             role="group"
             aria-label="Fases de trabajo de DEFRENTE"
             tabIndex={0}
+            onMouseEnter={() => setIsProcessPaused(true)}
+            onMouseLeave={() => setIsProcessPaused(false)}
+            onFocus={() => setIsProcessPaused(true)}
+            onBlur={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget)) setIsProcessPaused(false)
+            }}
             onKeyDown={(event) => {
               if (event.key === "ArrowRight") setProcessTurn((turn) => turn + 1)
               if (event.key === "ArrowLeft") setProcessTurn((turn) => turn - 1)
@@ -1022,25 +1076,25 @@ export default function Home() {
           >
             <div
               className="process-wheel"
-              style={{ transform: `rotate(${-processTurn * (360 / processPhases.length)}deg)` }}
+              style={{ transform: `rotate(${-processTurn * (360 / processWheelImages.length)}deg)` }}
               aria-hidden="true"
             >
-              {processPhases.map((phase, index) => (
+              {processWheelImages.map((image, index) => (
                 <div
-                  key={phase.category}
-                  className={`process-wheel-sector${index === activeProcessPhase ? " is-active" : ""}`}
+                  key={image}
+                  className={`process-wheel-sector${index === activeProcessSector ? " is-active" : ""}`}
                   style={{
                     clipPath: getProcessSectorClipPath(0),
-                    transform: `rotate(${index * (360 / processPhases.length)}deg)`,
+                    transform: `rotate(${index * (360 / processWheelImages.length)}deg)`,
                   }}
                 >
                   <div className="process-wheel-image-frame">
                     <Image
-                      src={phase.image}
+                      src={image}
                       alt=""
                       fill
                       sizes="(max-width: 768px) 60vw, 480px"
-                      loading={index === activeProcessPhase ? "eager" : "lazy"}
+                      loading={index === activeProcessSector ? "eager" : "lazy"}
                       className="process-wheel-image"
                     />
                   </div>
@@ -1083,75 +1137,28 @@ export default function Home() {
           </p>
           <div className="process-wheel-map">
             <Image
-              src="/fotos_principal/mapa.png"
+              src="/fotos_principal/mapa_paises.png"
               alt="Mapa de proyectos de DEFRENTE en Europa y Latinoamérica"
               width={1469}
               height={572}
               sizes="100vw"
               className="process-wheel-map-image"
             />
-            {mapLocations.map(({ name, x, y, projects }) => {
-              const placement = [
-                y < 200 ? "is-below" : "is-above",
-                x < 300 ? "is-start" : x > 1150 ? "is-end" : "is-center",
-              ].join(" ")
-
-              return (
-                <div
-                  key={name}
-                  className={`process-map-spot ${placement}${projects.length ? " has-projects" : ""}`}
-                  style={{ left: `${(x / 1469) * 100}%`, top: `${(y / 572) * 100}%` }}
-                >
-                  <button
-                    type="button"
-                    className="process-map-marker"
-                    aria-label={projects.length ? `${name}: ${projects.length} ${projects.length === 1 ? "proyecto" : "proyectos"}` : name}
-                    onClick={(event) => {
-                      const canHover = window.matchMedia("(hover: hover)").matches
-                      if (projects.length && canHover) {
-                        goToProject(projects[0].folderIndex, projects[0].entryIndex)
-                      } else {
-                        event.currentTarget.focus()
-                      }
-                    }}
-                  >
-                    {!projects.length && <span className="process-map-location" aria-hidden="true">{name}</span>}
-                  </button>
-                  {projects.length > 0 && (
-                    <div className="process-map-card">
-                      <p className="process-map-card-title">
-                        {name} <span>· {projects.length} {projects.length === 1 ? "proyecto" : "proyectos"}</span>
-                      </p>
-                      <ul className={`process-map-card-grid${projects.length === 1 ? " is-single" : ""}`}>
-                        {projects.slice(0, 4).map(({ folderIndex, entryIndex, entry }) => (
-                          <li key={`${folderIndex}-${entryIndex}`}>
-                            <button
-                              type="button"
-                              className="process-map-card-item"
-                              onClick={() => goToProject(folderIndex, entryIndex)}
-                            >
-                              <span className="process-map-card-photo">
-                                <Image src={entry.images[0]} alt="" fill sizes="160px" />
-                              </span>
-                              <span className="process-map-card-name">{entry.name}</span>
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                      {projects.length > 2 && (
-                        <button
-                          type="button"
-                          className={`process-map-card-more${projects.length > 4 ? "" : " is-mobile-only"}`}
-                          onClick={() => goToProject(projects[2].folderIndex, projects[2].entryIndex)}
-                        >
-                          Ver más proyectos en {name}
-                        </button>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )
-            })}
+            {projectMapCountries.map(({ name, cities, x, y, side = "right" }) => (
+              <div
+                key={name}
+                className={`process-map-spot is-${side}`}
+                style={{ left: `${(x / 1469) * 100}%`, top: `${(y / 572) * 100}%` }}
+                tabIndex={cities ? 0 : undefined}
+                aria-label={cities ? `${name}: ${cities}` : name}
+              >
+                <svg className="process-map-pin" viewBox="0 0 24 32" aria-hidden="true">
+                  <path d="M12 0C5.4 0 0 5.3 0 11.9 0 20.8 12 32 12 32s12-11.2 12-20.1C24 5.3 18.6 0 12 0Zm0 16.5a4.6 4.6 0 1 1 0-9.2 4.6 4.6 0 0 1 0 9.2Z" />
+                </svg>
+                <span className="process-map-country" aria-hidden="true">{name}</span>
+                {cities && <span className="process-map-cities" aria-hidden="true">{cities}</span>}
+              </div>
+            ))}
           </div>
         </section>
 
@@ -1229,7 +1236,7 @@ export default function Home() {
                               aria-pressed={activeProjectEntry === entryIndex}
                               onClick={() => openProjectEntry(entryIndex)}
                             >
-                              {entry.service ? entry.name : entry.place.split(" · ")[0]}
+                              {entry.name}
                             </button>
                           ))}
                         </div>
@@ -1265,6 +1272,7 @@ export default function Home() {
                               </button>
                               <span className="project-binder-photo-count">
                                 {activeProjectImage + 1} / {activeEntry.images.length}
+                                {activeSection && <> · {activeSection.label}</>}
                               </span>
                             </>
                           )}
@@ -1296,13 +1304,31 @@ export default function Home() {
                             <h3>{activeEntry.name}</h3>
                           </div>
                         </div>
-                        <span className="project-binder-location">
-                          {activeEntry.place}{activeEntry.size ? ` · ${activeEntry.size}` : ""}
-                        </span>
-                        {activeEntry.service && (
-                          <p className="project-binder-service"><strong>Servicio:</strong> {activeEntry.service}</p>
+                        {activeEntry.sections && (
+                          <div className="project-binder-sections" role="group" aria-label={`Partes de ${activeEntry.name}`}>
+                            {activeEntry.sections.map((section) => (
+                              <button
+                                key={section.label}
+                                type="button"
+                                className="project-binder-section"
+                                aria-pressed={activeSection?.label === section.label}
+                                onClick={() => setActiveProjectImage(section.from)}
+                              >
+                                {section.label}
+                              </button>
+                            ))}
+                          </div>
                         )}
-                        <p>{activeEntry.description ?? activeFolder.description}</p>
+                        <span className="project-binder-location">
+                          {activeEntry.place}
+                          {(activeSection?.size ?? activeEntry.size) ? ` · ${activeSection?.size ?? activeEntry.size}` : ""}
+                        </span>
+                        {(activeSection?.service ?? activeEntry.service) && (
+                          <p className="project-binder-service">
+                            <strong>Servicio:</strong> {activeSection?.service ?? activeEntry.service}
+                          </p>
+                        )}
+                        <p>{activeSection?.description ?? activeEntry.description ?? activeFolder.description}</p>
                         <Link href="/portfolio" className="project-binder-link">
                           Ver todos los proyectos <span aria-hidden="true">→</span>
                         </Link>
@@ -1489,7 +1515,11 @@ export default function Home() {
               </Link>
               <div className="footer-socials" role="group" aria-label="Redes sociales">
                 <span aria-label="Instagram" title="Instagram"><Instagram className="h-6 w-6" /></span>
-                <span aria-label="Facebook" title="Facebook"><Facebook className="h-6 w-6" /></span>
+                <span aria-label="TikTok" title="TikTok">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6" aria-hidden="true">
+                    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
+                  </svg>
+                </span>
                 <span aria-label="LinkedIn" title="LinkedIn"><Linkedin className="h-6 w-6" /></span>
               </div>
             </div>
@@ -1559,24 +1589,16 @@ export default function Home() {
         href="https://wa.me/34608756113"
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 bg-[#F7941D] text-white rounded-full p-3 shadow-lg hover:bg-[#D17C10] transition-colors z-50"
+        className="fixed bottom-6 right-6 bg-[#25D366] text-white rounded-full p-3 shadow-lg hover:bg-[#1EBE57] transition-colors z-50"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
           viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+          fill="currentColor"
           className="h-6 w-6"
+          aria-hidden="true"
         >
-          <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" />
-          <path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1Z" />
-          <path d="M14 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1Z" />
-          <path d="M9.5 13.5c.5 1 1.5 1 2.5 1s2-.5 2.5-1" />
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
         </svg>
         <span className="sr-only">WhatsApp</span>
       </Link>
