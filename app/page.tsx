@@ -264,8 +264,8 @@ const beforeAfterCases = [
   },
   {
     name: "cafetería",
-    before: "/antes_despues/Cafeteria_ANTES.png",
-    after: "/antes_despues/Cafeteria_DESPUES.png",
+    before: "/antes_despues/Cafeteria_ANTES.webp",
+    after: "/antes_despues/Cafeteria_DESPUES.webp",
   },
 ]
 
@@ -274,6 +274,7 @@ export default function Home() {
   const [activeServiceCard, setActiveServiceCard] = useState(0)
   const [processTurn, setProcessTurn] = useState(0)
   const processTouchStartX = useRef<number | null>(null)
+  const serviceTouchStartX = useRef<number | null>(null)
   const processStageRef = useRef<HTMLDivElement | null>(null)
   const [isProcessPaused, setIsProcessPaused] = useState(false)
   const [isProcessVisible, setIsProcessVisible] = useState(false)
@@ -839,7 +840,28 @@ export default function Home() {
             </div>
 
             <div className="service-carousel" aria-roledescription="carrusel" aria-label="Servicios de DEFRENTE">
-              <div className="service-carousel-track" aria-live="polite">
+              <div
+                className="service-carousel-track"
+                aria-live="polite"
+                onTouchStart={(event) => {
+                  serviceTouchStartX.current = event.touches[0]?.clientX ?? null
+                }}
+                onTouchEnd={(event) => {
+                  const startX = serviceTouchStartX.current
+                  serviceTouchStartX.current = null
+                  const endX = event.changedTouches[0]?.clientX
+                  if (startX === null || endX === undefined) return
+
+                  const deltaX = endX - startX
+                  if (Math.abs(deltaX) < 40) return
+
+                  setActiveServiceCard((current) =>
+                    deltaX < 0
+                      ? (current + 1) % serviceCards.length
+                      : (current - 1 + serviceCards.length) % serviceCards.length,
+                  )
+                }}
+              >
                 {serviceCards.map((card, index) => {
                   const relativeIndex = (index - activeServiceCard + serviceCards.length) % serviceCards.length
                   const position = relativeIndex > Math.floor(serviceCards.length / 2)
@@ -879,7 +901,7 @@ export default function Home() {
                           src={card.image}
                           alt={card.imageAlt}
                           fill
-                          sizes="(max-width: 768px) 72vw, 320px"
+                          sizes="(max-width: 768px) 78vw, 376px"
                           loading={position === 0 ? "eager" : "lazy"}
                           className="service-carousel-image"
                         />
@@ -1137,7 +1159,7 @@ export default function Home() {
           </p>
           <div className="process-wheel-map">
             <Image
-              src="/fotos_principal/mapa_paises.png"
+              src="/fotos_principal/mapa_paises.webp"
               alt="Mapa de proyectos de DEFRENTE en Europa y Latinoamérica"
               width={1469}
               height={572}
@@ -1329,9 +1351,9 @@ export default function Home() {
                           </p>
                         )}
                         <p>{activeSection?.description ?? activeEntry.description ?? activeFolder.description}</p>
-                        <Link href="/portfolio" className="project-binder-link">
-                          Ver todos los proyectos <span aria-hidden="true">→</span>
-                        </Link>
+                        <button type="button" className="project-binder-link" onClick={openContactForm}>
+                          Solicita nuestro servicio <span aria-hidden="true">→</span>
+                        </button>
                       </div>
                     </div>
 

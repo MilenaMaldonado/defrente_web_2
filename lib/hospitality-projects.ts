@@ -53,7 +53,7 @@ export const hospitalityProjects = [
     location: "Quito",
     year: 2025,
     area: 152,
-    photos: ["cafeteria-ovejitas-negras/1.png", "cafeteria-ovejitas-negras/2.png"],
+    photos: ["cafeteria-ovejitas-negras/1.webp", "cafeteria-ovejitas-negras/2.webp"],
     service: "Diseño de cafetería y espacios de networking empresarial.",
     description: "Diseño de un concepto híbrido que integra cafetería, áreas de networking y espacios de encuentro para jóvenes emprendedores. La propuesta busca favorecer la conexión entre usuarios, el intercambio de ideas y la creación de nuevas oportunidades, incorporando zonas flexibles para reuniones, colaboración y desarrollo de iniciativas empresariales.",
   },
